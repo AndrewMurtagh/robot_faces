@@ -1,0 +1,6 @@
+Header header
+float32 elevation # up and down, y coordinate in raster
+float32 azimuth # left and right, x coordinate in raster
+int64 timeout #timeout in milliseconds
+---
+bool done

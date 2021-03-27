@@ -1,0 +1,3 @@
+<launch>
+    <node ns="/robot_face" name="robot_face" pkg="robot_faces" type="robot_faces_node" respawn="false" output="screen" />
+</launch>
