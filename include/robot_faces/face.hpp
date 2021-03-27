@@ -33,7 +33,8 @@ class Face
 
 public:
     Face() : left_eyebrow_(EyebrowShape::Arc, LEFT_EYEBROW_ENTITIES),
-             right_eyebrow_(EyebrowShape::Arc, RIGHT_EYEBROW_ENTITIES) {}
+             right_eyebrow_(EyebrowShape::Arc, RIGHT_EYEBROW_ENTITIES),
+             background_colour_(sf::Color(255, 255, 255, 255)) {}
 
     void setGaze();
 
@@ -45,6 +46,7 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
     {
+        renderWindow.clear(background_colour_);
         left_iris_.draw(renderWindow, frame_delta_time);
         right_iris_.draw(renderWindow, frame_delta_time);
 
@@ -68,6 +70,7 @@ private:
     Pupil right_pupil_;
     Nose nose_;
     Mouth mouth_;
+    sf::Color background_colour_;
 };
 
 void Face::configure(const FaceConfiguration &face_config)
@@ -76,6 +79,7 @@ void Face::configure(const FaceConfiguration &face_config)
     /*
     Misc
     */
+    background_colour_ = face_config.background_colour;
     nose_.setBackgroundColour(face_config.background_colour);
 
     const float WINDOW_WIDTH = face_config.window_width;

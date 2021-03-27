@@ -38,23 +38,23 @@ enum class MouthShape
 
 
 std::regex g_rgba_regex("^(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9])$");
-sf::Color g_background_colour(255, 255, 255, 255);
-const sf::Transform g_mirror_transform(-1.0f, 0.f, 0.0f,
-                                        0.f, 1.0f, 0.0f,
-                                        0.f, 0.f, 1.f);
+const sf::Transform g_mirror_transform(-1.0f, 0.0f, 0.0f,
+                                        0.0f, 1.0f, 0.0f,
+                                        0.0f, 0.0f, 1.0f);
 
-const float CLOSE_ENOUGH_THRESHOLD          = 3.0f; // in px
-const float MOVEMENT_SPEED                  = 150; // in px / second
+const int FRAME_RATE                        = 30; // fps
+const float CLOSE_ENOUGH_THRESHOLD          = 3.0f; // px
+const float MOVEMENT_SPEED                  = 150; // px / ms
 const float PUPIL_IRIS_DELTA                = 0.7f; // the difference in movement between the pupil and iris
 const int NUM_CORNER_POINTS                 = 25; // the number of points used to discretize a corner
 
 // window
-const int DEFAULT_WINDOW_WIDTH              = 800;
-const int DEFAULT_WINDOW_HEIGHT             = 600;
+const int DEFAULT_WINDOW_WIDTH              = 800; // px
+const int DEFAULT_WINDOW_HEIGHT             = 600; // px
 
-const int DEFAULT_MOUTH_WIDTH               = 200;
-const int DEFAULT_MOUTH_HEIGHT              = 60;
-const int DEFAULT_RECT_MOUTH_RADIUS         = 30;
+const int DEFAULT_MOUTH_WIDTH               = 200; // px
+const int DEFAULT_MOUTH_HEIGHT              = 60; // px
+const int DEFAULT_RECT_MOUTH_RADIUS         = 30; // px
 
 const sf::Vector2f IRIS_SIZE                = sf::Vector2f(120.0f, 120.0f);
 const sf::Vector2f SQUIRCLE_IRIS_RADIUS     = sf::Vector2f(1.0f, 1.0f);

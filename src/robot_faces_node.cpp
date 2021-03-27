@@ -13,6 +13,7 @@
 #include <dynamic_reconfigure/server.h>
 #include <robot_faces/ParametersConfig.h>
 
+#include <robot_faces/consts.hpp>
 #include <robot_faces/face.hpp>
 #include <robot_faces/face-config.hpp>
 
@@ -40,8 +41,8 @@ void dynamicReconfigureCb(robot_faces::ParametersConfig &config, uint32_t level)
     faceConfig.window_height = config.window_height;
     try
     {
-        g_background_colour = validateColour(config.background_colour);
-        faceConfig.background_colour = g_background_colour;
+        sf::Color background_colour = validateColour(config.background_colour);
+        faceConfig.background_colour = background_colour;
     }
     catch (...)
     {
@@ -153,11 +154,11 @@ int main(int argc, char **argv)
     f = boost::bind(&dynamicReconfigureCb, _1, _2);
     server.setCallback(f);
 
-    // set the framerate to be the same as the monitor's refresh rate to reduce the change of adverse visual artifacts - tearing.
+    // set the framerate to be the same as the monitor's refresh rate to reduce the chance of adverse visual artifacts - tearing.
     // sometimes vertical synchronistion is forced off by the graphic card so we should fall back to limiting the framerate
     // to a reasonable figure.
     // renderWindow.setVerticalSyncEnabled(true);
-    renderWindow.setFramerateLimit(30);
+    renderWindow.setFramerateLimit(FRAME_RATE);
 
     /*
     main loop
@@ -182,13 +183,13 @@ int main(int argc, char **argv)
         /* 
         frame timing
         */
-        float frame_delta_time = frame_clock.getElapsedTime().asMilliseconds() / 1000.0f; // time since last frame draw
+        // time since last frame draw
+        float frame_delta_time = frame_clock.getElapsedTime().asMilliseconds(); 
         frame_clock.restart();
 
         /*
         draw
         */
-        renderWindow.clear(g_background_colour);
         face.draw(renderWindow, frame_delta_time);
         renderWindow.display();
 
