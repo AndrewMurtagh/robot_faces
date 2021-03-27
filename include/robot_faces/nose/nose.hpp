@@ -9,7 +9,6 @@
 #include <robot_faces/nose/curve-nose.hpp>
 #include <robot_faces/entities/vertex-entity.hpp>
 #include <robot_faces/entities/squircle-entity.hpp>
-#include <robot_faces/nose/squircle-nose.hpp>
 
 const std::multimap<NoseShape, std::shared_ptr<Entity>> NOSE_ENTITIES_{
     {NoseShape::Annulus, std::make_shared<AnnulusNose>()},
@@ -25,7 +24,6 @@ public:
 
     void setBackgroundColour(const sf::Color background_colour)
     {
-        ROS_INFO("Nose::setBackgroundColour");
         for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(NoseShape::Annulus)); range.first != range.second; ++range.first)
         {
             std::shared_ptr<AnnulusNose> annulus_cast = std::static_pointer_cast<AnnulusNose>(range.first->second);
@@ -35,7 +33,6 @@ public:
 
     void setSquircleRadius(const sf::Vector2f squircle_radius)
     {
-        ROS_INFO("Nose::setSquircleRadius");
         for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(NoseShape::Squircle)); range.first != range.second; ++range.first)
         {
             std::shared_ptr<SquircleEntity> squircle_cast = std::static_pointer_cast<SquircleEntity>(range.first->second);

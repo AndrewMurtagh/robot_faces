@@ -1,5 +1,5 @@
-#ifndef VERTEX__ENTITY_H
-#define VERTEX__ENTITY_H
+#ifndef VERTEX_ENTITY_H
+#define VERTEX_ENTITY_H
 
 #include <SFML/Graphics.hpp>
 #include <robot_faces/entities/ientity.hpp>
@@ -36,4 +36,4 @@ private:
 
 
 
-#endif // VERTEX__ENTITY_H
+#endif // VERTEX_ENTITY_H

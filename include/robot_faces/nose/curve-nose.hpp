@@ -27,7 +27,6 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
     {
-        // ROS_INFO("CurveNose::draw");
         renderWindow.draw(curve_nose_points_, transform_);
         renderWindow.draw(left_nose_curve_fillet_, transform_);
         renderWindow.draw(right_nose_curve_fillet_, transform_);

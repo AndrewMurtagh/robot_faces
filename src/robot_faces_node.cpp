@@ -191,7 +191,6 @@ int main(int argc, char **argv)
         renderWindow.clear(g_background_colour);
         face.draw(renderWindow, frame_delta_time);
         renderWindow.display();
-        // std::cout << std::endl;
 
         ros::spinOnce();
     }

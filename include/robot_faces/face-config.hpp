@@ -5,20 +5,13 @@
 #include <robot_faces/consts.hpp>
 
 /*
-why not just pass the dynamic reconfigure object to face and let it
-deal with that? 
-we want to have separate any face code from any ros code as much as possible
-
-this also provides a method to only updates parts of the face that need updating
-recomputing vertices can be expensive so we don't do it if we don't have to
+Why not just pass the dynamic reconfigure object to face and let it deal with that? 
+We want to have separate any face code from any ros code as much as possible
 */
 struct FaceConfiguration
 {
 
-    // no need for defaults since dynamiic reconfigure will call it
-    // immediately
-    // method fo isDifferent();
-    // update if different with map
+    // no need for defaults since dynamic reconfigure will call it immediately
 
     /*
     misc

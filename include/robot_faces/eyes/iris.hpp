@@ -23,7 +23,6 @@ public:
 
     void setSquircleRadius(const sf::Vector2f squircle_radius)
     {
-        ROS_INFO("Iris::setSquircleRadius");
         for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(IrisShape::Squircle)); range.first != range.second; ++range.first)
         {
             std::shared_ptr<SquircleEntity> squircle_cast = std::static_pointer_cast<SquircleEntity>(range.first->second);

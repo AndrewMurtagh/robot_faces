@@ -17,13 +17,11 @@ public:
         squircle_shape_.setOrigin(sf::Vector2f(NOSE_SIZE.x / 2.0f, NOSE_SIZE.y / 2.0f));
         squircle_shape_.setRadius(sf::Vector2f(NOSE_SIZE.x / 2.0f * SQUIRCLE_NOSE_RADIUS.x, NOSE_SIZE.y / 2.0f * SQUIRCLE_NOSE_RADIUS.y));
         squircle_shape_.setSize(sf::Vector2f(NOSE_SIZE.x, NOSE_SIZE.y));
-        squircle_shape_.setCornerPointCount(NUM_CORNER_POINTS);
 
     }
 
     void setSquircleRadius(const sf::Vector2f squircle_radius)
     {
-        ROS_INFO("SquircleMouth::setSquircleRadius");
         squircle_shape_.setRadius(sf::Vector2f(NOSE_SIZE.x / 2.0f * squircle_radius.x, NOSE_SIZE.y / 2.0f * squircle_radius.y));
     }
 
@@ -35,7 +33,6 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
     {
-        // ROS_INFO("SquircleNose::draw");
         renderWindow.draw(squircle_shape_, transform_);
         Entity::draw(renderWindow, frame_delta_time);
     }

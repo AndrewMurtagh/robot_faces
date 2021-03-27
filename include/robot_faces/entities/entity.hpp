@@ -41,7 +41,6 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
     {
-        // ROS_INFO("Entity::draw");
         renderWindow.draw(reference_marker_, transform_);
     }
 

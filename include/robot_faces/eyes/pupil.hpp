@@ -17,7 +17,6 @@ public:
         squircle_shape_.setOrigin(sf::Vector2f(PUPIL_SIZE / 2.0f, PUPIL_SIZE / 2.0f));
         squircle_shape_.setRadius(sf::Vector2f(PUPIL_SIZE / 2.0f * PUPIL_RADIUS.x, PUPIL_SIZE / 2.0f * PUPIL_RADIUS.y));
         squircle_shape_.setSize(sf::Vector2f(PUPIL_SIZE, PUPIL_SIZE));
-        squircle_shape_.setCornerPointCount(NUM_CORNER_POINTS);
 
         pupil_highlight_shape_one_.setFillColor(sf::Color(255, 255, 255, 50));
         pupil_highlight_shape_one_.setOrigin(sf::Vector2f(PUPIL_SIZE / 4.0f, PUPIL_SIZE / 4.0f));
@@ -35,7 +34,6 @@ public:
 
     void setSquircleRadius(const sf::Vector2f squircle_radius)
     {
-        ROS_INFO("Pupil::setSquircleRadius");
         squircle_shape_.setRadius(sf::Vector2f(PUPIL_SIZE / 2.0f * squircle_radius.x, PUPIL_SIZE / 2.0f * squircle_radius.y));
     }
 
@@ -47,7 +45,6 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
     {
-        // ROS_INFO("Pupil::draw");
         renderWindow.draw(squircle_shape_, transform_);
 
         if (show_pupil_highlight_)

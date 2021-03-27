@@ -21,13 +21,11 @@ public:
 
     void setSpeaking(const bool speaking)
     {
-        ROS_INFO("Mouth::setSpeaking");
     }
     
 
     void setSquircleRadius(const sf::Vector2f squircle_radius)
     {
-        ROS_INFO("Mouth::setSquircleRadius");
         for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(MouthShape::Squircle)); range.first != range.second; ++range.first)
         {
             std::shared_ptr<SquircleMouth> squircle_cast = std::static_pointer_cast<SquircleMouth>(range.first->second);

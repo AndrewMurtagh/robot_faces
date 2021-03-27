@@ -31,7 +31,6 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
     {
-        // ROS_INFO("AnnulusNose::draw");
         renderWindow.draw(outer_shape_, transform_);
         renderWindow.draw(inner_shape_, transform_);
         Entity::draw(renderWindow, frame_delta_time);

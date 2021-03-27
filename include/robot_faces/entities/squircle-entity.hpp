@@ -1,5 +1,5 @@
-#ifndef SQUIRCLE_NOSE_HPP
-#define SQUIRCLE_NOSE_HPP
+#ifndef SQUIRCLE_ENTITY_HPP
+#define SQUIRCLE_ENTITY_HPP
 
 #include <SFML/Graphics.hpp>
 #include <ros/ros.h>
@@ -17,12 +17,10 @@ public:
         squircle_shape_.setOrigin(sf::Vector2f(size_.x / 2.0f, size_.y / 2.0f));
         squircle_shape_.setRadius(sf::Vector2f(size_.x / 2.0f * radius_.x, size_.y / 2.0f * radius_.y));
         squircle_shape_.setSize(size_);
-        squircle_shape_.setCornerPointCount(NUM_CORNER_POINTS);
     }
 
     void setSquircleRadius(const sf::Vector2f squircle_radius)
     {
-        ROS_INFO("SquircleEntity::setSquircleRadius");
         squircle_shape_.setRadius(sf::Vector2f(size_.x / 2.0f * squircle_radius.x, size_.y / 2.0f * squircle_radius.y));
     }
 
@@ -34,7 +32,6 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
     {
-        // ROS_INFO("SquircleEntity::draw");
         renderWindow.draw(squircle_shape_, transform_);
         Entity::draw(renderWindow, frame_delta_time);
     }
@@ -45,4 +42,4 @@ private:
     sf::Vector2f radius_;
 };
 
-#endif // SQUIRCLE_NOSE_HPP
+#endif // SQUIRCLE_ENTITY_HPP
