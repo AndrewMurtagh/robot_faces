@@ -96,26 +96,25 @@ void Face::configure(const FaceConfiguration &face_config)
                                         0.0f, 0.0f, 1.f);
 
     sf::Transform left_eye_face_transform;
-    left_eye_face_transform.scale(face_config.pupil_scaling);
     left_eye_face_transform.combine(face_center_transform);
     left_eye_face_transform.translate(-0.5f * face_config.eye_spacing * WINDOW_WIDTH, WINDOW_HEIGHT * face_config.eye_y);
+    left_eye_face_transform.scale(face_config.pupil_scaling);
 
     sf::Transform right_eye_face_transform;
-    right_eye_face_transform.scale(face_config.pupil_scaling);
     right_eye_face_transform.combine(face_center_transform);
     right_eye_face_transform.translate(0.5f * face_config.eye_spacing * WINDOW_WIDTH, WINDOW_HEIGHT * face_config.eye_y);
+    right_eye_face_transform.scale(face_config.pupil_scaling);
     right_eye_face_transform.combine(g_mirror_transform);
 
     sf::Transform left_eyebrow_eye_transform;
-    left_eyebrow_eye_transform.scale(face_config.eyebrow_scaling);
     left_eyebrow_eye_transform.combine(left_eye_face_transform);
     left_eyebrow_eye_transform.translate(0, face_config.eyebrow_spacing * WINDOW_HEIGHT);
+    left_eyebrow_eye_transform.scale(face_config.eyebrow_scaling);
 
     sf::Transform right_eyebrow_eye_transform;
-    right_eyebrow_eye_transform.scale(face_config.eyebrow_scaling);
     right_eyebrow_eye_transform.combine(right_eye_face_transform);
     right_eyebrow_eye_transform.translate(0, face_config.eyebrow_spacing * WINDOW_HEIGHT);
-    right_eyebrow_eye_transform.combine(g_mirror_transform);
+    right_eyebrow_eye_transform.scale(face_config.eyebrow_scaling);
 
     sf::Transform nose_face_transform;
     nose_face_transform.combine(face_center_transform);
@@ -123,8 +122,9 @@ void Face::configure(const FaceConfiguration &face_config)
     nose_face_transform.scale(face_config.nose_scaling);
 
     sf::Transform mouth_face_transform;
-    mouth_face_transform.scale(face_config.mouth_scaling);
+    mouth_face_transform.combine(face_center_transform);
     mouth_face_transform.translate(0, WINDOW_HEIGHT * face_config.mouth_y);
+    mouth_face_transform.scale(face_config.mouth_scaling);
 
     /*
     Eyes
@@ -180,8 +180,8 @@ void Face::configure(const FaceConfiguration &face_config)
     /*
     Mouth
     */
-    // mouth_.setShape(face_config.mouth_shape);
-    mouth_.setTransformation(face_center_transform * mouth_face_transform);
+    mouth_.setShape(face_config.mouth_shape);
+    mouth_.setTransformation(mouth_face_transform);
     mouth_.setColour(face_config.mouth_colour);
     mouth_.setSquircleRadius(face_config.mouth_squircle_radius);
     mouth_.show(face_config.show_mouth);

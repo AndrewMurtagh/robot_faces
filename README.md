@@ -114,8 +114,6 @@ timeout: 0"
 
 ## TODO
 
-- [x] Mouth speaking
-
 - [ ] Gaze
 
 - [ ] Expressions
@@ -133,6 +131,8 @@ timeout: 0"
 - [ ] Check for changes in face config before sending to face facade
 
 - [ ] Seperate header and implementation files
+
+- [x] Mouth speaking
 
 - [x] Make squircle mouth inherit from squircle entity
 
