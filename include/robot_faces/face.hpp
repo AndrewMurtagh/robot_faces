@@ -34,7 +34,9 @@ class Face
 public:
     Face() : left_eyebrow_(EyebrowShape::Arc, LEFT_EYEBROW_ENTITIES),
              right_eyebrow_(EyebrowShape::Arc, RIGHT_EYEBROW_ENTITIES),
-             background_colour_(sf::Color(255, 255, 255, 255)) {}
+             background_colour_(sf::Color(255, 255, 255, 255))
+    {
+    }
 
     void setGaze();
 

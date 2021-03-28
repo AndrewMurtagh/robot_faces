@@ -71,6 +71,7 @@ const int CURVE_NOSE_RADIUS                 = 30;
 
 // mouth 
 const float LINE_MOUTH_THICKNESS            = 16.0f; //px
+const sf::Vector2f MOUTH_SIZE               = sf::Vector2f(240.0f, 200.0f);
 
 // reference markers
 const sf::Color REF_MARKER_COLOUR           = sf::Color(sf::Color::Cyan);
