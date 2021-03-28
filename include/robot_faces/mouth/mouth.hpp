@@ -18,11 +18,30 @@ class Mouth : public ProxyEntity<MouthShape>
 public:
     Mouth() : ProxyEntity(MouthShape::Line, MOUTH_ENTITIES_) {}
 
-
     void setSpeaking(const bool speaking)
     {
+        for (EntityMapPair entity : entity_map_)
+        {
+            switch (entity.first)
+            {
+
+                case MouthShape::Squircle:
+                {
+                    std::shared_ptr<SquircleMouth> squircle_cast = std::static_pointer_cast<SquircleMouth>(entity.second);
+                    squircle_cast->setSpeaking(speaking);
+                    break;
+                }
+
+                case MouthShape::Line:
+                {
+                    std::shared_ptr<LineMouth> line_cast = std::static_pointer_cast<LineMouth>(entity.second);
+                    line_cast->setSpeaking(speaking);
+                    break;
+                }
+
+            }
+        }
     }
-    
 
     void setSquircleRadius(const sf::Vector2f squircle_radius)
     {

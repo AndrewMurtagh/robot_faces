@@ -25,6 +25,11 @@ public:
         squircle_shape_.setRadius(sf::Vector2f(NOSE_SIZE.x / 2.0f * squircle_radius.x, NOSE_SIZE.y / 2.0f * squircle_radius.y));
     }
 
+    void setSpeaking(const bool speaking)
+    {
+    }
+    
+
     void setColour(const sf::Color colour) override
     {
         Entity::setColour(colour);

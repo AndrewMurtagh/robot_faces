@@ -11,7 +11,9 @@
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <dynamic_reconfigure/server.h>
+
 #include <robot_faces/ParametersConfig.h>
+#include <robot_faces/Speaking.h>
 
 #include <robot_faces/consts.hpp>
 #include <robot_faces/face.hpp>
@@ -29,7 +31,7 @@ FaceConfiguration faceConfig;
 callback functions
 */
 
-void dynamicReconfigureCb(robot_faces::ParametersConfig &config, uint32_t level)
+void dynamicReconfigureCallback(robot_faces::ParametersConfig &config, uint32_t level)
 {
     ROS_INFO("\nReconfigure Request");
 
@@ -138,6 +140,15 @@ void dynamicReconfigureCb(robot_faces::ParametersConfig &config, uint32_t level)
     face.configure(faceConfig);
 }
 
+bool speakingCallback(robot_faces::Speaking::Request &req, robot_faces::Speaking::Response &res)
+{
+
+    ROS_INFO_STREAM("Speaking Request " << req.speak);
+    face.setSpeaking(req.speak);
+
+    return true;
+}
+
 /*
 main
 */
@@ -148,11 +159,13 @@ int main(int argc, char **argv)
 
     ros::NodeHandle node_handle;
 
-    dynamic_reconfigure::Server<robot_faces::ParametersConfig> server;
+    dynamic_reconfigure::Server<robot_faces::ParametersConfig> dynamic_reconfigure_server;
     dynamic_reconfigure::Server<robot_faces::ParametersConfig>::CallbackType f;
 
-    f = boost::bind(&dynamicReconfigureCb, _1, _2);
-    server.setCallback(f);
+    f = boost::bind(&dynamicReconfigureCallback, _1, _2);
+    dynamic_reconfigure_server.setCallback(f);
+
+    ros::ServiceServer speaking_server = node_handle.advertiseService("speaking", speakingCallback);
 
     // set the framerate to be the same as the monitor's refresh rate to reduce the chance of adverse visual artifacts - tearing.
     // sometimes vertical synchronistion is forced off by the graphic card so we should fall back to limiting the framerate
@@ -184,7 +197,7 @@ int main(int argc, char **argv)
         frame timing
         */
         // time since last frame draw
-        float frame_delta_time = frame_clock.getElapsedTime().asMilliseconds(); 
+        float frame_delta_time = frame_clock.getElapsedTime().asMilliseconds();
         frame_clock.restart();
 
         /*

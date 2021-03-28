@@ -38,6 +38,10 @@ public:
     {
     }
 
+    void setSpeaking(const bool speaking) {
+        mouth_.setSpeaking(speaking);
+    }
+
     void setGaze();
 
     void setExpression();

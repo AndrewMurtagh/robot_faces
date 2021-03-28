@@ -110,8 +110,12 @@ timeout: 0"
 
 - Expression intensities.
 
+- Add timeout and speed to speaking service
+
 
 ## TODO
+
+- [ ] Mouth speaking
 
 - [ ] Gaze
 

@@ -10,7 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
     dynamic_reconfigure
     roscpp
     roslib
-    # rospy
     std_msgs
     message_generation
 )
@@ -24,6 +23,19 @@ set(CMAKE_MODULE_PATH
 find_package(SFML REQUIRED)
 
 
+# Generate services in the 'srv' folder
+add_service_files(
+  FILES
+  Speaking.srv
+)
+
+# Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
+# Generate dynamic reconfigure parameters in the 'cfg' folder
 generate_dynamic_reconfigure_options(
     cfg/Parameters.cfg
 )

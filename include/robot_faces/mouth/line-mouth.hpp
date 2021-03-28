@@ -32,6 +32,10 @@ public:
         mouth_fillet_.setOrigin(LINE_MOUTH_THICKNESS/2.0f, LINE_MOUTH_THICKNESS/2.0f);
     }
 
+    void setSpeaking(const bool speaking)
+    {
+    }
+
     void setColour(const sf::Color colour) override
     {
         Entity::setColour(colour);
