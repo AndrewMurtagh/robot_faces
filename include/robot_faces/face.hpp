@@ -12,15 +12,7 @@
 #include <robot_faces/nose/nose.hpp>
 #include <robot_faces/mouth/mouth.hpp>
 
-const std::multimap<EyebrowShape, std::shared_ptr<Entity>> LEFT_EYEBROW_ENTITIES{
-    {EyebrowShape::Rectangle, std::make_shared<VertexEntity>("/res/eyebrow/rectangle.txt")},
-    {EyebrowShape::Square, std::make_shared<VertexEntity>("/res/eyebrow/square.txt")},
-    {EyebrowShape::Rounded, std::make_shared<VertexEntity>("/res/eyebrow/rounded.txt")},
-    {EyebrowShape::Straight, std::make_shared<VertexEntity>("/res/eyebrow/straight.txt")},
-    {EyebrowShape::Arch, std::make_shared<VertexEntity>("/res/eyebrow/arch.txt")},
-    {EyebrowShape::Arc, std::make_shared<VertexEntity>("/res/eyebrow/arc.txt")}};
-
-const std::multimap<EyebrowShape, std::shared_ptr<Entity>> RIGHT_EYEBROW_ENTITIES{
+const std::multimap<EyebrowShape, std::shared_ptr<Entity>> EYEBROW_ENTITIES{
     {EyebrowShape::Rectangle, std::make_shared<VertexEntity>("/res/eyebrow/rectangle.txt")},
     {EyebrowShape::Square, std::make_shared<VertexEntity>("/res/eyebrow/square.txt")},
     {EyebrowShape::Rounded, std::make_shared<VertexEntity>("/res/eyebrow/rounded.txt")},
@@ -32,18 +24,21 @@ class Face
 {
 
 public:
-    Face() : left_eyebrow_(EyebrowShape::Arc, LEFT_EYEBROW_ENTITIES),
-             right_eyebrow_(EyebrowShape::Arc, RIGHT_EYEBROW_ENTITIES),
+    Face() : left_eyebrow_(EyebrowShape::Arc, EYEBROW_ENTITIES),
+             right_eyebrow_(EyebrowShape::Arc, EYEBROW_ENTITIES),
              background_colour_(sf::Color(255, 255, 255, 255))
     {
+        DEBUG_ONCE = true;
+        DEBUG_TIMER = 0.0f;
     }
 
-    void setSpeaking(const bool speaking) {
+    void setSpeaking(const bool speaking)
+    {
         mouth_.setSpeaking(speaking);
     }
 
-    void setGaze(const sf::Vector2f gaze_vector) {
-        
+    void setGaze(const sf::Vector2f gaze_vector)
+    {
     }
 
     void setExpression();
@@ -54,19 +49,32 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
     {
+        DEBUG_TIMER += frame_delta_time;
+        if (DEBUG_TIMER > 2000 && DEBUG_ONCE)
+        {
+            DEBUG_ONCE = false;
+            std::cout << "move mouth" << std::endl;
+
+            sf::Transform face_center_transform(1.0f, 0.0f, 800 * 0.75f,
+                                                0.0f, 1.0f, 600 * 0.5f,
+                                                0.0f, 0.0f, 1.f);
+            mouth_.setTransformation(face_center_transform);
+        }
+
         renderWindow.clear(background_colour_);
-        left_iris_.draw(renderWindow, frame_delta_time);
-        right_iris_.draw(renderWindow, frame_delta_time);
 
-        left_pupil_.draw(renderWindow, frame_delta_time);
-        right_pupil_.draw(renderWindow, frame_delta_time);
+        // left_iris_.draw(renderWindow, frame_delta_time);
+        // right_iris_.draw(renderWindow, frame_delta_time);
 
-        left_eyebrow_.draw(renderWindow, frame_delta_time);
-        right_eyebrow_.draw(renderWindow, frame_delta_time);
+        // left_pupil_.draw(renderWindow, frame_delta_time);
+        // right_pupil_.draw(renderWindow, frame_delta_time);
+
+        // left_eyebrow_.draw(renderWindow, frame_delta_time);
+        // right_eyebrow_.draw(renderWindow, frame_delta_time);
 
         mouth_.draw(renderWindow, frame_delta_time);
 
-        nose_.draw(renderWindow, frame_delta_time);
+        // nose_.draw(renderWindow, frame_delta_time);
     }
 
 private:
@@ -79,6 +87,9 @@ private:
     Nose nose_;
     Mouth mouth_;
     sf::Color background_colour_;
+
+    bool DEBUG_ONCE;
+    float DEBUG_TIMER;
 };
 
 void Face::configure(const FaceConfiguration &face_config)

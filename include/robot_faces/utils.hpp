@@ -12,6 +12,14 @@ T clamp(const T &n, const T &lower, const T &upper)
     return std::max(lower, std::min(n, upper));
 }
 
+inline void printTransform(const sf::Transform& transform) {
+    const float* matrix = transform.getMatrix();
+    std::cout << matrix[0] << ", " << matrix[4] << ", " << matrix[8] << ", " << matrix[12] << std::endl << 
+                matrix[1] << ", " << matrix[5] << ", " << matrix[9] << ", " << matrix[13] <<  std::endl << 
+                matrix[2] << ", " << matrix[6] << ", " << matrix[10] << ", " << matrix[14] <<  std::endl << 
+                matrix[3] << ", " << matrix[7] << ", " << matrix[11] << ", " << matrix[15] << std::endl;
+}
+
 sf::Color validateColour(const std::string &c)
 {
     if (std::regex_match(c, g_rgba_regex))

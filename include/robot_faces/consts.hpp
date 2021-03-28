@@ -36,26 +36,24 @@ enum class MouthShape
     Line
 };
 
-
 std::regex g_rgba_regex("^(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9])$");
 const sf::Transform g_mirror_transform(-1.0f, 0.0f, 0.0f,
                                         0.0f, 1.0f, 0.0f,
                                         0.0f, 0.0f, 1.0f);
 
 const int FRAME_RATE                        = 30; // fps
-const float CLOSE_ENOUGH_THRESHOLD          = 3.0f; // px
-const float MOVEMENT_SPEED                  = 150; // px / ms
-const float PUPIL_IRIS_DELTA                = 0.7f; // the difference in movement between the pupil and iris
 const int NUM_CORNER_POINTS                 = 25; // the number of points used to discretize a corner
 
 // window
 const int DEFAULT_WINDOW_WIDTH              = 800; // px
 const int DEFAULT_WINDOW_HEIGHT             = 600; // px
 
-
+// eyes
+const float EYE_SPEED                       = 0.01f; // px / ms
+const sf::Vector2f MAX_GAZE_SIZE            = sf::Vector2f(120.0f, 80.0f);
+const float PUPIL_IRIS_DELTA                = 0.7f; // the difference in movement between the pupil and iris
 const sf::Vector2f IRIS_SIZE                = sf::Vector2f(120.0f, 120.0f);
 const sf::Vector2f SQUIRCLE_IRIS_RADIUS     = sf::Vector2f(1.0f, 1.0f);
-
 const int PUPIL_SIZE                        = 80;
 const sf::Vector2f PUPIL_RADIUS             = sf::Vector2f(1.0f, 1.0f);
 
@@ -71,7 +69,7 @@ const float LINE_MOUTH_THICKNESS            = 16.0f; //px
 const sf::Vector2f MOUTH_SIZE               = sf::Vector2f(200.0f, 100.0f);
 const sf::Vector2f SQUIRCLE_MOUTH_RADIUS    = sf::Vector2f(1.0f, 1.0f);
 const float SPEAKING_ELON_CLOSE_ENOUGH      = 0.01f; // Y scale
-const float SPEAKING_SPEED                  = 0.01f; // px / ms       
+const float SPEAKING_SPEED                  = 0.01f; // px / ms
 
 // reference markers
 const sf::Color REF_MARKER_COLOUR           = sf::Color(sf::Color::Cyan);

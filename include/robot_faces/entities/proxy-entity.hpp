@@ -5,6 +5,7 @@
 #include <robot_faces/entities/ientity.hpp>
 #include <robot_faces/entities/entity.hpp>
 #include <robot_faces/consts.hpp>
+#include <robot_faces/utils.hpp>
 
 template <typename T>
 class ProxyEntity : public IEntity
@@ -17,11 +18,22 @@ protected:
     T shape_;
     bool show_;
     EntityMap entity_map_;
+    sf::Transform curr_transformation_;
+    sf::Transform target_transformation_;
 
 public:
     ProxyEntity(T shape, EntityMap entity_map) : shape_(shape),
                                                  entity_map_(entity_map),
-                                                 show_(true) {}
+                                                 show_(true)
+    {
+        curr_transformation_ = sf::Transform(1.0f, 0.0f, 800 * 0.5f,
+                                            0.0f, 1.0f, 600 * 0.75f,
+                                            0.0f, 0.0f, 1.f);
+
+        target_transformation_ = sf::Transform(1.0f, 0.0f, 800 * 0.5f,
+                                            0.0f, 1.0f, 600 * 0.75f,
+                                            0.0f, 0.0f, 1.f);
+    }
 
     void setShape(T shape)
     {
@@ -41,10 +53,13 @@ public:
     */
     void setTransformation(const sf::Transform transform) override
     {
-        for (EntityMapPair entity : entity_map_)
-        {
-            entity.second->setTransformation(transform);
-        }
+        target_transformation_ = transform;
+        // curr_transformation_ = target_transformation_;
+        // for (EntityMapPair entity : entity_map_)
+        // {
+        //     // TODO DON'T MOVE IMMEDIATELY, INTERLOP
+        //     entity.second->setTransformation(transform);
+        // }
     }
 
     void setColour(const sf::Color colour) override
@@ -68,10 +83,35 @@ public:
         if (!show_)
             return;
 
-        for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(shape_)); range.first != range.second; ++range.first)
+        const float* curr_trans_matrix = curr_transformation_.getMatrix();
+        const float* target_trans_matrix = target_transformation_.getMatrix();
+
+        sf::Transform new_curr_transformation(
+            curr_trans_matrix[0] + frame_delta_time * 0.01f * (target_trans_matrix[0] - curr_trans_matrix[0]),
+            curr_trans_matrix[4] + frame_delta_time * 0.01f * (target_trans_matrix[4] - curr_trans_matrix[1]),
+            curr_trans_matrix[12] + frame_delta_time * 0.01f * (target_trans_matrix[12] - curr_trans_matrix[12]),
+
+            curr_trans_matrix[1] + frame_delta_time * 0.01f * (target_trans_matrix[1] - curr_trans_matrix[1]),
+            curr_trans_matrix[5] + frame_delta_time * 0.01f * (target_trans_matrix[5] - curr_trans_matrix[5]),
+            curr_trans_matrix[13] + frame_delta_time * 0.01f * (target_trans_matrix[13] - curr_trans_matrix[13]), 
+
+            curr_trans_matrix[3] + frame_delta_time * 0.01f * (target_trans_matrix[3] - curr_trans_matrix[3]),
+            curr_trans_matrix[7] + frame_delta_time * 0.01f * (target_trans_matrix[7] - curr_trans_matrix[7]),
+            curr_trans_matrix[15] + frame_delta_time * 0.01f * (target_trans_matrix[15] - curr_trans_matrix[15]));
+        
+
+        curr_transformation_ = new_curr_transformation;
+
+        for (EntityMapPair entity : entity_map_)
         {
-            range.first->second->draw(renderWindow, frame_delta_time);
+            entity.second->setTransformation(curr_transformation_);
+
+            if (entity.first == shape_)
+            {
+                entity.second->draw(renderWindow, frame_delta_time);
+            }
         }
+
     }
 };
 
