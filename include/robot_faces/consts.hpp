@@ -52,9 +52,6 @@ const int NUM_CORNER_POINTS                 = 25; // the number of points used t
 const int DEFAULT_WINDOW_WIDTH              = 800; // px
 const int DEFAULT_WINDOW_HEIGHT             = 600; // px
 
-const int DEFAULT_MOUTH_WIDTH               = 200; // px
-const int DEFAULT_MOUTH_HEIGHT              = 60; // px
-const int DEFAULT_RECT_MOUTH_RADIUS         = 30; // px
 
 const sf::Vector2f IRIS_SIZE                = sf::Vector2f(120.0f, 120.0f);
 const sf::Vector2f SQUIRCLE_IRIS_RADIUS     = sf::Vector2f(1.0f, 1.0f);
@@ -71,7 +68,10 @@ const int CURVE_NOSE_RADIUS                 = 30;
 
 // mouth 
 const float LINE_MOUTH_THICKNESS            = 16.0f; //px
-const sf::Vector2f MOUTH_SIZE               = sf::Vector2f(240.0f, 200.0f);
+const sf::Vector2f MOUTH_SIZE               = sf::Vector2f(200.0f, 100.0f);
+const sf::Vector2f SQUIRCLE_MOUTH_RADIUS    = sf::Vector2f(1.0f, 1.0f);
+const float SQUIRCLE_ELON_CLOSE_ENOUGH      = 0.01f; // Y scale
+const float SPEAKING_SPEED                  = 0.01f; // px / ms       
 
 // reference markers
 const sf::Color REF_MARKER_COLOUR           = sf::Color(sf::Color::Cyan);

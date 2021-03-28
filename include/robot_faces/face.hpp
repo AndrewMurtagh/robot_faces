@@ -180,7 +180,7 @@ void Face::configure(const FaceConfiguration &face_config)
     /*
     Mouth
     */
-    mouth_.setShape(face_config.mouth_shape);
+    // mouth_.setShape(face_config.mouth_shape);
     mouth_.setTransformation(face_center_transform * mouth_face_transform);
     mouth_.setColour(face_config.mouth_colour);
     mouth_.setSquircleRadius(face_config.mouth_squircle_radius);

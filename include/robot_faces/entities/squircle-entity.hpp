@@ -36,7 +36,7 @@ public:
         Entity::draw(renderWindow, frame_delta_time);
     }
 
-private:
+protected:
     sf::SquircleShape squircle_shape_;
     sf::Vector2f size_;
     sf::Vector2f radius_;

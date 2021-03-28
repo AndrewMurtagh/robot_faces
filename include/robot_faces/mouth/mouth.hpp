@@ -16,7 +16,7 @@ class Mouth : public ProxyEntity<MouthShape>
 {
 
 public:
-    Mouth() : ProxyEntity(MouthShape::Line, MOUTH_ENTITIES_) {}
+    Mouth() : ProxyEntity(MouthShape::Squircle, MOUTH_ENTITIES_) {}
 
     void setSpeaking(const bool speaking)
     {
