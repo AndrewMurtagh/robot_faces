@@ -110,12 +110,11 @@ timeout: 0"
 
 - Expression intensities.
 
-- Add timeout and speed to speaking service
-
+- Add timeout and speed to speaking service.
 
 ## TODO
 
-- [ ] Mouth speaking
+- [x] Mouth speaking
 
 - [ ] Gaze
 
@@ -125,9 +124,7 @@ timeout: 0"
 
 - [ ] Handle window size changing and resize entities
 
-- [ ] Make squircle mouth inherit from squircle entity
-
-- [ ] Reset to defaults in dynamic_reconfigure
+- [ ] Reset to defaults option in dynamic_reconfigure
 
 - [ ] Set full screen window
 
@@ -136,6 +133,14 @@ timeout: 0"
 - [ ] Check for changes in face config before sending to face facade
 
 - [ ] Seperate header and implementation files
+
+- [x] Make squircle mouth inherit from squircle entity
+
+## Notes
+
+- Should we make a Mouth entity that deals with speaking behaviour instead of duplicating code in LineMouth and SquircleMouth?
+
+- Should speaking randomisation have a minimum distance to prevent small movements? Should we also enforce a change in direction with every change?
 
 ## Contributors
 

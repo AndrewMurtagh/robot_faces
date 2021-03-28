@@ -39,7 +39,7 @@ public:
     {
         if (is_speaking_)
         {
-            if (abs(target_elongation_scale_ - curr_elongation_scale_) < SQUIRCLE_ELON_CLOSE_ENOUGH)
+            if (abs(target_elongation_scale_ - curr_elongation_scale_) < SPEAKING_ELON_CLOSE_ENOUGH)
             {
                 curr_elongation_scale_ = target_elongation_scale_;
                 target_elongation_scale_ = elongation_dist_(random_engine_);

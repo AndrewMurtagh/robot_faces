@@ -70,7 +70,7 @@ const int CURVE_NOSE_RADIUS                 = 30;
 const float LINE_MOUTH_THICKNESS            = 16.0f; //px
 const sf::Vector2f MOUTH_SIZE               = sf::Vector2f(200.0f, 100.0f);
 const sf::Vector2f SQUIRCLE_MOUTH_RADIUS    = sf::Vector2f(1.0f, 1.0f);
-const float SQUIRCLE_ELON_CLOSE_ENOUGH      = 0.01f; // Y scale
+const float SPEAKING_ELON_CLOSE_ENOUGH      = 0.01f; // Y scale
 const float SPEAKING_SPEED                  = 0.01f; // px / ms       
 
 // reference markers
