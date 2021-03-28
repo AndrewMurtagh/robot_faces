@@ -47,23 +47,23 @@ The face can be interacted with through ROS services.
 
 You can change the expression of the face to a number of predefined expressions listed below through the a `/robot_face/expression` service call.
 
-1. NEUTRAL
+1. `NEUTRAL`
 
-2. SADNESS
+2. `SADNESS`
 
-3. FEAR
+3. `FEAR`
 
-4. DISGUST
+4. `DISGUST`
 
-5. ANGER
+5. `ANGER`
 
-6. JOY
+6. `JOY`
 
-7. HAPPINESS
+7. `HAPPINESS`
 
-8. AWE
+8. `AWE`
 
-9. SURPRISE
+9. `SURPRISE`
 
 The default expression is `NEUTRAL`. You can set a timeout in milliseconds for how long the expression should be held for, after it expires the expression will return to its previous state. If the timeout is set to zero the change in expression will be permanent.
 
@@ -110,8 +110,6 @@ timeout: 0"
 
 - Expression intensities.
 
-- Add timeout and speed to speaking service.
-
 ## TODO
 
 - [ ] Gaze
@@ -131,6 +129,10 @@ timeout: 0"
 - [ ] Check for changes in face config before sending to face facade
 
 - [ ] Seperate header and implementation files
+
+- [ ] Add timeout and speed to speaking service.
+
+- [ ] Add timeout to gaze service.
 
 - [x] Mouth speaking
 

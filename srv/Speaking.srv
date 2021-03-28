@@ -1,4 +1,4 @@
 Header header
 bool speak # whether to speak or not
 ---
-bool done
+bool handled

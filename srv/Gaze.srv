@@ -1,6 +1,5 @@
 Header header
-float32 elevation # up and down, y coordinate in raster
-float32 azimuth # left and right, x coordinate in raster
-int64 timeout #timeout in milliseconds
+float32 elevation # up and down, -1.0 to 1.0 as a percentage of max gaze distance
+float32 azimuth # left and right, -1.0 to 1.0 as a percentage of max gaze distance
 ---
-bool done
+bool handled

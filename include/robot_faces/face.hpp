@@ -42,7 +42,9 @@ public:
         mouth_.setSpeaking(speaking);
     }
 
-    void setGaze();
+    void setGaze(const sf::Vector2f gaze_vector) {
+        
+    }
 
     void setExpression();
 

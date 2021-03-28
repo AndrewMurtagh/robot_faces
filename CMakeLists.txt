@@ -27,6 +27,7 @@ find_package(SFML REQUIRED)
 add_service_files(
   FILES
   Speaking.srv
+  Gaze.srv
 )
 
 # Generate added messages and services with any dependencies listed here

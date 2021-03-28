@@ -1,20 +1,17 @@
-
 #include <fstream>
 #include <string>
 #include <iostream>
 #include <random>
+#include <algorithm>
 #include <regex>
 #include <map>
-
 #include <SFML/Graphics.hpp>
-
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <dynamic_reconfigure/server.h>
-
 #include <robot_faces/ParametersConfig.h>
 #include <robot_faces/Speaking.h>
-
+#include <robot_faces/Gaze.h>
 #include <robot_faces/consts.hpp>
 #include <robot_faces/face.hpp>
 #include <robot_faces/face-config.hpp>
@@ -28,9 +25,8 @@ Face face;
 FaceConfiguration faceConfig;
 
 /*
-callback functions
+dynamic reconfigure callback
 */
-
 void dynamicReconfigureCallback(robot_faces::ParametersConfig &config, uint32_t level)
 {
     ROS_INFO("\nReconfigure Request");
@@ -140,11 +136,29 @@ void dynamicReconfigureCallback(robot_faces::ParametersConfig &config, uint32_t 
     face.configure(faceConfig);
 }
 
+/*
+speaking callback
+*/
 bool speakingCallback(robot_faces::Speaking::Request &req, robot_faces::Speaking::Response &res)
 {
-
     ROS_INFO_STREAM("Speaking Request " << req.speak);
     face.setSpeaking(req.speak);
+    res.handled = true;
+
+    return true;
+}
+
+/*
+gaze callback
+*/
+bool gazeCallback(robot_faces::Gaze::Request &req, robot_faces::Gaze::Response &res)
+{
+    ROS_INFO_STREAM("Change Gaze Request " << req.elevation << ", " << req.azimuth);
+
+    const float gaze_elevation = clamp(req.elevation, 1.0f, 1.0f);
+    const float gaze_azimuth = clamp(req.azimuth, 1.0f, 1.0f);
+    face.setGaze(sf::Vector2f(gaze_elevation, gaze_azimuth));
+    res.handled = true;
 
     return true;
 }
@@ -166,6 +180,7 @@ int main(int argc, char **argv)
     dynamic_reconfigure_server.setCallback(f);
 
     ros::ServiceServer speaking_server = node_handle.advertiseService("speaking", speakingCallback);
+    ros::ServiceServer gaze_server = node_handle.advertiseService("gaze", gazeCallback);
 
     // set the framerate to be the same as the monitor's refresh rate to reduce the chance of adverse visual artifacts - tearing.
     // sometimes vertical synchronistion is forced off by the graphic card so we should fall back to limiting the framerate

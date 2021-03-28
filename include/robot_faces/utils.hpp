@@ -5,6 +5,12 @@
 #include <SFML/Graphics.hpp>
 #include <robot_faces/consts.hpp>
 
+// clamp is available in C++17
+template <typename T>
+T clamp(const T &n, const T &lower, const T &upper)
+{
+    return std::max(lower, std::min(n, upper));
+}
 
 sf::Color validateColour(const std::string &c)
 {
@@ -94,23 +100,23 @@ void readVerticesFromFile(sf::VertexArray &vertex_array, std::string file_path, 
     file.close();
 }
 
+sf::VertexArray generateLineWithThickness(const std::vector<sf::Vector2f> &points, const sf::Color color, const float thickness)
+{
+    sf::VertexArray array = sf::VertexArray(sf::TrianglesStrip);
 
-sf::VertexArray generateLineWithThickness(const std::vector<sf::Vector2f>& points, const sf::Color color, const float thickness) {
-	sf::VertexArray array = sf::VertexArray(sf::TrianglesStrip);
+    for (int i = 0; i < points.size() - 1; i++)
+    {
+        sf::Vector2f line = points[i] - points[i + 1];
+        sf::Vector2f normal = normalize(sf::Vector2f(-line.y, line.x));
 
-  for (int i=0; i < points.size()-1; i++) {
-    sf::Vector2f line = points[i] - points[i+1];
-    sf::Vector2f normal = normalize(sf::Vector2f(-line.y, line.x));
+        array.append(sf::Vertex(points[i] - thickness * normal, color));
+        array.append(sf::Vertex(points[i] + thickness * normal, color));
 
-		array.append(sf::Vertex(points[i] - thickness * normal, color));
-		array.append(sf::Vertex(points[i] + thickness * normal, color));
+        array.append(sf::Vertex(points[i + 1] - thickness * normal, color));
+        array.append(sf::Vertex(points[i + 1] + thickness * normal, color));
+    }
 
-		array.append(sf::Vertex(points[i+1] - thickness * normal, color));
-		array.append(sf::Vertex(points[i+1] + thickness * normal, color));
-	}
-
-	return array;
+    return array;
 }
-
 
 #endif // UTILS_H
