@@ -13,16 +13,10 @@ class Entity : public IEntity
 public:
     Entity() : mirrored_(false)
     {
-        reference_marker_.setRadius(REF_MARKER_RADIUS);
-        reference_marker_.setOrigin(REF_MARKER_RADIUS, REF_MARKER_RADIUS);
-        reference_marker_.setFillColor(REF_MARKER_COLOUR);
     }
 
     Entity(bool mirror) : mirrored_(mirror)
     {
-        reference_marker_.setRadius(REF_MARKER_RADIUS);
-        reference_marker_.setOrigin(REF_MARKER_RADIUS, REF_MARKER_RADIUS);
-        reference_marker_.setFillColor(REF_MARKER_COLOUR);
     }
 
     void setTransformation(const sf::Transform transform) override
@@ -41,14 +35,12 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
     {
-        // renderWindow.draw(reference_marker_, transform_);
     }
 
 protected:
     bool mirrored_;
     sf::Transform transform_;
     sf::Color colour_;
-    sf::CircleShape reference_marker_;
 };
 
 #endif // ENTITY_H

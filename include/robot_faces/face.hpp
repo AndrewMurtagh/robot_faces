@@ -20,27 +20,39 @@ const std::multimap<EyebrowShape, std::shared_ptr<Entity>> EYEBROW_ENTITIES{
     {EyebrowShape::Arch, std::make_shared<VertexEntity>("/res/eyebrow/arch.txt")},
     {EyebrowShape::Arc, std::make_shared<VertexEntity>("/res/eyebrow/arc.txt")}};
 
-struct TransformationTree
+struct TransformTree
 {
 
-    TransformationTree()
+    TransformTree()
     {
-        DEBUG_GAZE_MARKER.setRadius(5);
-        DEBUG_GAZE_MARKER.setOrigin(5, 5);
-        DEBUG_GAZE_MARKER.setFillColor(sf::Color(255, 0, 255, 255));
+        marker_.setRadius(5);
+        marker_.setOrigin(5, 5);
+        marker_.setFillColor(sf::Color(255, 0, 255, 255));
     }
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
     {
-        renderWindow.draw(DEBUG_GAZE_MARKER, left_eye_transform_);
-        renderWindow.draw(DEBUG_GAZE_MARKER, right_eye_transform_);
+        
+        renderWindow.draw(marker_, face_center_transform_);
+        renderWindow.draw(marker_, left_eye_transform_);
+        renderWindow.draw(marker_, right_eye_transform_);
+        renderWindow.draw(marker_, left_eyebrow_transform_);
+        renderWindow.draw(marker_, right_eyebrow_transform_);
+        renderWindow.draw(marker_, nose_transform_);
+        renderWindow.draw(marker_, mouth_transform_);
     }
 
+    sf::Transform face_center_transform_;
     sf::Transform left_eye_transform_;
     sf::Transform right_eye_transform_;
+    sf::Transform left_eyebrow_transform_;
+    sf::Transform right_eyebrow_transform_;
+    sf::Transform nose_transform_;
+    sf::Transform mouth_transform_;
+    
     sf::Vector2f gaze_offset_vec;
     sf::Vector2f saccade_offset_vec;
-    sf::CircleShape DEBUG_GAZE_MARKER;
+    sf::CircleShape marker_;
 };
 
 class Face
@@ -72,22 +84,22 @@ public:
     {
         // std::cout << gaze_vector.x << " , " << gaze_vector.y << std::endl;
 
-        transformation_tree_.gaze_offset_vec = sf::Vector2f(gaze_vector.x * MAX_GAZE_SIZE.x, gaze_vector.y * MAX_GAZE_SIZE.y);
+        transform_tree_.gaze_offset_vec = sf::Vector2f(gaze_vector.x * MAX_GAZE_SIZE.x, gaze_vector.y * MAX_GAZE_SIZE.y);
 
-        sf::Transform temp_transform = transformation_tree_.left_eye_transform_;
-        temp_transform.translate(transformation_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transformation_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
+        sf::Transform temp_transform = transform_tree_.left_eye_transform_;
+        temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
         left_iris_.setTransformation(temp_transform);
 
-        temp_transform = transformation_tree_.right_eye_transform_;
-        temp_transform.translate(transformation_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transformation_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
+        temp_transform = transform_tree_.right_eye_transform_;
+        temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
         right_iris_.setTransformation(temp_transform);
 
-        temp_transform = transformation_tree_.left_eye_transform_;
-        temp_transform.translate(transformation_tree_.gaze_offset_vec).translate(transformation_tree_.saccade_offset_vec);
+        temp_transform = transform_tree_.left_eye_transform_;
+        temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
         left_pupil_.setTransformation(temp_transform);
 
-        temp_transform = transformation_tree_.right_eye_transform_;
-        temp_transform.translate(transformation_tree_.gaze_offset_vec).translate(transformation_tree_.saccade_offset_vec);
+        temp_transform = transform_tree_.right_eye_transform_;
+        temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
         right_pupil_.setTransformation(temp_transform);
     }
 
@@ -104,25 +116,22 @@ public:
             if (saccade_countdown_ <= 0)
             {
 
-                std::cout << "do saccade" << std::endl;
+                transform_tree_.saccade_offset_vec = sf::Vector2f(saccade_pos_dist_(random_engine_), saccade_pos_dist_(random_engine_));
 
-                // const sf::Vector2f delta = sf::Vector2f(gaze_vector.x * MAX_GAZE_SIZE.x, gaze_vector.y * MAX_GAZE_SIZE.y);
-                transformation_tree_.saccade_offset_vec = sf::Vector2f(saccade_pos_dist_(random_engine_), saccade_pos_dist_(random_engine_));
-
-                sf::Transform temp_transform = transformation_tree_.left_eye_transform_;
-                temp_transform.translate(transformation_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transformation_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
+                sf::Transform temp_transform = transform_tree_.left_eye_transform_;
+                temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
                 left_iris_.setTransformation(temp_transform);
 
-                temp_transform = transformation_tree_.right_eye_transform_;
-                temp_transform.translate(transformation_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transformation_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
+                temp_transform = transform_tree_.right_eye_transform_;
+                temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
                 right_iris_.setTransformation(temp_transform);
 
-                temp_transform = transformation_tree_.left_eye_transform_;
-                temp_transform.translate(transformation_tree_.gaze_offset_vec).translate(transformation_tree_.saccade_offset_vec);
+                temp_transform = transform_tree_.left_eye_transform_;
+                temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
                 left_pupil_.setTransformation(temp_transform);
 
-                temp_transform = transformation_tree_.right_eye_transform_;
-                temp_transform.translate(transformation_tree_.gaze_offset_vec).translate(transformation_tree_.saccade_offset_vec);
+                temp_transform = transform_tree_.right_eye_transform_;
+                temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
                 right_pupil_.setTransformation(temp_transform);
 
                 saccade_countdown_ = saccade_time_dist_(random_engine_);
@@ -139,9 +148,9 @@ public:
             DEBUG_ONCE = false;
             std::cout << "move mouth" << std::endl;
 
-            sf::Transform face_center_transform(1.0f, 0.0f, 800 * 0.75f,
-                                                0.0f, 1.0f, 600 * 0.5f,
-                                                0.0f, 0.0f, 1.f);
+            // sf::Transform face_center_transform(1.0f, 0.0f, 800 * 0.75f,
+            //                                     0.0f, 1.0f, 600 * 0.5f,
+            //                                     0.0f, 0.0f, 1.f);
             // mouth_.setTransformation(face_center_transform);
         }
 
@@ -160,7 +169,7 @@ public:
 
         nose_.draw(renderWindow, frame_delta_time);
 
-        transformation_tree_.draw(renderWindow, frame_delta_time);
+        transform_tree_.draw(renderWindow, frame_delta_time);
     }
 
 private:
@@ -173,7 +182,7 @@ private:
     Nose nose_;
     Mouth mouth_;
     sf::Color background_colour_;
-    TransformationTree transformation_tree_;
+    TransformTree transform_tree_;
 
     bool do_saccades_;
     // counts down milliseconds until next saccade
@@ -196,42 +205,45 @@ void Face::configure(const FaceConfiguration &face_config)
     background_colour_ = face_config.background_colour;
     nose_.setBackgroundColour(face_config.background_colour);
 
+
+    /*
+    Update transform tree structure
+    */
     const float WINDOW_WIDTH = face_config.window_width;
     const float WINDOW_HEIGHT = face_config.window_height;
 
-    sf::Transform face_center_transform(1.0f, 0.0f, WINDOW_WIDTH * 0.5f,
-                                        0.0f, 1.0f, WINDOW_HEIGHT * face_config.face_center,
-                                        0.0f, 0.0f, 1.f);
+    transform_tree_.face_center_transform_ = sf::Transform::Identity;
+    transform_tree_.face_center_transform_.translate(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * face_config.face_center);
 
-    transformation_tree_.left_eye_transform_ = sf::Transform::Identity;
-    transformation_tree_.left_eye_transform_.combine(face_center_transform);
-    transformation_tree_.left_eye_transform_.translate(-0.5f * face_config.eye_spacing * WINDOW_WIDTH, WINDOW_HEIGHT * face_config.eye_y);
-    transformation_tree_.left_eye_transform_.scale(face_config.pupil_scaling);
+    transform_tree_.left_eye_transform_ = sf::Transform::Identity;
+    transform_tree_.left_eye_transform_.combine(transform_tree_.face_center_transform_);
+    transform_tree_.left_eye_transform_.translate(-0.5f * face_config.eye_spacing * WINDOW_WIDTH, WINDOW_HEIGHT * face_config.eye_y);
+    transform_tree_.left_eye_transform_.scale(face_config.pupil_scaling);
 
-    transformation_tree_.right_eye_transform_ = sf::Transform::Identity;
-    transformation_tree_.right_eye_transform_.combine(face_center_transform);
-    transformation_tree_.right_eye_transform_.translate(0.5f * face_config.eye_spacing * WINDOW_WIDTH, WINDOW_HEIGHT * face_config.eye_y);
-    transformation_tree_.right_eye_transform_.scale(face_config.pupil_scaling);
+    transform_tree_.right_eye_transform_ = sf::Transform::Identity;
+    transform_tree_.right_eye_transform_.combine(transform_tree_.face_center_transform_);
+    transform_tree_.right_eye_transform_.translate(0.5f * face_config.eye_spacing * WINDOW_WIDTH, WINDOW_HEIGHT * face_config.eye_y);
+    transform_tree_.right_eye_transform_.scale(face_config.pupil_scaling);
 
-    sf::Transform left_eyebrow_eye_transform;
-    left_eyebrow_eye_transform.combine(transformation_tree_.left_eye_transform_);
-    left_eyebrow_eye_transform.translate(0, face_config.eyebrow_spacing * WINDOW_HEIGHT);
-    left_eyebrow_eye_transform.scale(face_config.eyebrow_scaling);
+    transform_tree_.left_eyebrow_transform_ = sf::Transform::Identity;
+    transform_tree_.left_eyebrow_transform_.combine(transform_tree_.left_eye_transform_);
+    transform_tree_.left_eyebrow_transform_.translate(0, face_config.eyebrow_spacing * WINDOW_HEIGHT);
+    transform_tree_.left_eyebrow_transform_.scale(face_config.eyebrow_scaling);
 
-    sf::Transform right_eyebrow_eye_transform;
-    right_eyebrow_eye_transform.combine(transformation_tree_.right_eye_transform_);
-    right_eyebrow_eye_transform.translate(0, face_config.eyebrow_spacing * WINDOW_HEIGHT);
-    right_eyebrow_eye_transform.scale(face_config.eyebrow_scaling);
+    transform_tree_.right_eyebrow_transform_ = sf::Transform::Identity;
+    transform_tree_.right_eyebrow_transform_.combine(transform_tree_.right_eye_transform_);
+    transform_tree_.right_eyebrow_transform_.translate(0, face_config.eyebrow_spacing * WINDOW_HEIGHT);
+    transform_tree_.right_eyebrow_transform_.scale(face_config.eyebrow_scaling);
 
-    sf::Transform nose_face_transform;
-    nose_face_transform.combine(face_center_transform);
-    nose_face_transform.translate(0, WINDOW_HEIGHT * face_config.nose_y);
-    nose_face_transform.scale(face_config.nose_scaling);
+    transform_tree_.nose_transform_ = sf::Transform::Identity;
+    transform_tree_.nose_transform_.combine(transform_tree_.face_center_transform_);
+    transform_tree_.nose_transform_.translate(0, WINDOW_HEIGHT * face_config.nose_y);
+    transform_tree_.nose_transform_.scale(face_config.nose_scaling);
 
-    sf::Transform mouth_face_transform;
-    mouth_face_transform.combine(face_center_transform);
-    mouth_face_transform.translate(0, WINDOW_HEIGHT * face_config.mouth_y);
-    mouth_face_transform.scale(face_config.mouth_scaling);
+    transform_tree_.mouth_transform_ = sf::Transform::Identity;
+    transform_tree_.mouth_transform_.combine(transform_tree_.face_center_transform_);
+    transform_tree_.mouth_transform_.translate(0, WINDOW_HEIGHT * face_config.mouth_y);
+    transform_tree_.mouth_transform_.scale(face_config.mouth_scaling);
 
     /*
     Eyes
@@ -240,25 +252,25 @@ void Face::configure(const FaceConfiguration &face_config)
 
     // iris
     left_iris_.setShape(face_config.iris_shape);
-    left_iris_.setTransformation(transformation_tree_.left_eye_transform_);
+    left_iris_.setTransformation(transform_tree_.left_eye_transform_);
     left_iris_.setColour(face_config.iris_colour);
     left_iris_.setSquircleRadius(face_config.iris_squircle_radius);
     left_iris_.show(face_config.show_iris);
 
     right_iris_.setShape(face_config.iris_shape);
-    right_iris_.setTransformation(transformation_tree_.right_eye_transform_);
+    right_iris_.setTransformation(transform_tree_.right_eye_transform_);
     right_iris_.setColour(face_config.iris_colour);
     right_iris_.setSquircleRadius(face_config.iris_squircle_radius);
     right_iris_.show(face_config.show_iris);
 
     // left pupil
-    left_pupil_.setTransformation(transformation_tree_.left_eye_transform_);
+    left_pupil_.setTransformation(transform_tree_.left_eye_transform_);
     left_pupil_.setColour(face_config.pupil_colour);
     left_pupil_.setSquircleRadius(face_config.pupil_squircle_radius);
     left_pupil_.setPupilHighlightShow(face_config.show_pupil_highlights);
 
     // right pupil
-    right_pupil_.setTransformation(transformation_tree_.right_eye_transform_);
+    right_pupil_.setTransformation(transform_tree_.right_eye_transform_);
     right_pupil_.setColour(face_config.pupil_colour);
     right_pupil_.setSquircleRadius(face_config.pupil_squircle_radius);
     right_pupil_.setPupilHighlightShow(face_config.show_pupil_highlights);
@@ -267,12 +279,12 @@ void Face::configure(const FaceConfiguration &face_config)
     Eyebrows
     */
     left_eyebrow_.setShape(face_config.eyebrow_shape);
-    left_eyebrow_.setTransformation(left_eyebrow_eye_transform);
+    left_eyebrow_.setTransformation(transform_tree_.left_eyebrow_transform_);
     left_eyebrow_.setColour(face_config.eyebrow_colour);
     left_eyebrow_.show(face_config.show_eyebrows);
 
     right_eyebrow_.setShape(face_config.eyebrow_shape);
-    right_eyebrow_.setTransformation(right_eyebrow_eye_transform);
+    right_eyebrow_.setTransformation(transform_tree_.right_eyebrow_transform_);
     right_eyebrow_.setColour(face_config.eyebrow_colour);
     right_eyebrow_.show(face_config.show_eyebrows);
 
@@ -280,7 +292,7 @@ void Face::configure(const FaceConfiguration &face_config)
     Nose
     */
     nose_.setShape(face_config.nose_shape);
-    nose_.setTransformation(nose_face_transform);
+    nose_.setTransformation(transform_tree_.nose_transform_);
     nose_.setColour(face_config.nose_colour);
     nose_.setSquircleRadius(face_config.nose_squircle_radius);
     nose_.show(face_config.show_nose);
@@ -289,7 +301,7 @@ void Face::configure(const FaceConfiguration &face_config)
     Mouth
     */
     mouth_.setShape(face_config.mouth_shape);
-    mouth_.setTransformation(mouth_face_transform);
+    mouth_.setTransformation(transform_tree_.mouth_transform_);
     mouth_.setColour(face_config.mouth_colour);
     mouth_.setSquircleRadius(face_config.mouth_squircle_radius);
     mouth_.show(face_config.show_mouth);
