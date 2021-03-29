@@ -51,7 +51,7 @@ const int DEFAULT_WINDOW_HEIGHT             = 600; // px
 // eyes
 const float EYE_SPEED                       = 0.01f; // px / ms
 const sf::Vector2f MAX_GAZE_SIZE            = sf::Vector2f(120.0f, 80.0f);
-const float PUPIL_IRIS_DELTA                = 0.7f; // the difference in movement between the pupil and iris
+const float PUPIL_IRIS_DELTA                = 0.8f; // the difference in movement between the pupil and iris
 const sf::Vector2f IRIS_SIZE                = sf::Vector2f(120.0f, 120.0f);
 const sf::Vector2f SQUIRCLE_IRIS_RADIUS     = sf::Vector2f(1.0f, 1.0f);
 const int PUPIL_SIZE                        = 80;

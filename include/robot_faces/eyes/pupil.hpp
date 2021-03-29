@@ -37,6 +37,12 @@ public:
         squircle_shape_.setRadius(sf::Vector2f(PUPIL_SIZE / 2.0f * squircle_radius.x, PUPIL_SIZE / 2.0f * squircle_radius.y));
     }
 
+    void setTransformation(const sf::Transform transform) override
+    {
+        target_transformation_ = transform;
+    }
+
+
     void setColour(const sf::Color colour) override
     {
         Entity::setColour(colour);
@@ -45,15 +51,34 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
     {
-        renderWindow.draw(squircle_shape_, transform_);
+        const float* curr_trans_matrix = curr_transformation_.getMatrix();
+        const float* target_trans_matrix = target_transformation_.getMatrix();
+
+        sf::Transform new_curr_transformation(
+            curr_trans_matrix[0] + frame_delta_time * 0.01f * (target_trans_matrix[0] - curr_trans_matrix[0]),
+            curr_trans_matrix[4] + frame_delta_time * 0.01f * (target_trans_matrix[4] - curr_trans_matrix[1]),
+            curr_trans_matrix[12] + frame_delta_time * 0.01f * (target_trans_matrix[12] - curr_trans_matrix[12]),
+
+            curr_trans_matrix[1] + frame_delta_time * 0.01f * (target_trans_matrix[1] - curr_trans_matrix[1]),
+            curr_trans_matrix[5] + frame_delta_time * 0.01f * (target_trans_matrix[5] - curr_trans_matrix[5]),
+            curr_trans_matrix[13] + frame_delta_time * 0.01f * (target_trans_matrix[13] - curr_trans_matrix[13]), 
+
+            curr_trans_matrix[3] + frame_delta_time * 0.01f * (target_trans_matrix[3] - curr_trans_matrix[3]),
+            curr_trans_matrix[7] + frame_delta_time * 0.01f * (target_trans_matrix[7] - curr_trans_matrix[7]),
+            curr_trans_matrix[15] + frame_delta_time * 0.01f * (target_trans_matrix[15] - curr_trans_matrix[15]));
+        
+
+        curr_transformation_ = new_curr_transformation;
+        
+        renderWindow.draw(squircle_shape_, curr_transformation_);
 
         if (show_pupil_highlight_)
         {
-            sf::Transform highlight_one_transform = transform_;
+            sf::Transform highlight_one_transform = curr_transformation_;
             highlight_one_transform.translate(12.0f, -12.0f);
             renderWindow.draw(pupil_highlight_shape_one_, highlight_one_transform);
 
-            sf::Transform highlight_two_transform = transform_;
+            sf::Transform highlight_two_transform = curr_transformation_;
             highlight_two_transform.translate(0.0f, -24.0f);
             renderWindow.draw(pupil_highlight_shape_two_, highlight_two_transform);
         }
@@ -66,6 +91,8 @@ private:
     sf::SquircleShape squircle_shape_;
     sf::CircleShape pupil_highlight_shape_one_;
     sf::CircleShape pupil_highlight_shape_two_;
+    sf::Transform curr_transformation_;
+    sf::Transform target_transformation_;
 };
 
 #endif // PUPIL_HPP

@@ -26,13 +26,6 @@ public:
                                                  entity_map_(entity_map),
                                                  show_(true)
     {
-        curr_transformation_ = sf::Transform(1.0f, 0.0f, 800 * 0.5f,
-                                            0.0f, 1.0f, 600 * 0.75f,
-                                            0.0f, 0.0f, 1.f);
-
-        target_transformation_ = sf::Transform(1.0f, 0.0f, 800 * 0.5f,
-                                            0.0f, 1.0f, 600 * 0.75f,
-                                            0.0f, 0.0f, 1.f);
     }
 
     void setShape(T shape)
@@ -54,12 +47,6 @@ public:
     void setTransformation(const sf::Transform transform) override
     {
         target_transformation_ = transform;
-        // curr_transformation_ = target_transformation_;
-        // for (EntityMapPair entity : entity_map_)
-        // {
-        //     // TODO DON'T MOVE IMMEDIATELY, INTERLOP
-        //     entity.second->setTransformation(transform);
-        // }
     }
 
     void setColour(const sf::Color colour) override

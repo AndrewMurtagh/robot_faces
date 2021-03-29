@@ -30,6 +30,10 @@ public:
     {
         DEBUG_ONCE = true;
         DEBUG_TIMER = 0.0f;
+
+        DEBUG_GAZE_MARKER.setRadius(5);
+        DEBUG_GAZE_MARKER.setOrigin(5, 5);
+        DEBUG_GAZE_MARKER.setFillColor(sf::Color(255, 0, 255, 255));
     }
 
     void setSpeaking(const bool speaking)
@@ -39,6 +43,24 @@ public:
 
     void setGaze(const sf::Vector2f gaze_vector)
     {
+        // std::cout << gaze_vector.x << " , " << gaze_vector.y << std::endl;
+        const sf::Vector2f delta = sf::Vector2f(gaze_vector.x * MAX_GAZE_SIZE.x, gaze_vector.y * MAX_GAZE_SIZE.y);
+
+        sf::Transform gaze_transform = left_eye_face_transform_;
+        gaze_transform.translate(delta*PUPIL_IRIS_DELTA);
+        left_iris_.setTransformation(gaze_transform);
+
+        gaze_transform = right_eye_face_transform_;
+        gaze_transform.translate(delta*PUPIL_IRIS_DELTA);
+        right_iris_.setTransformation(gaze_transform);
+
+        gaze_transform = left_eye_face_transform_;
+        gaze_transform.translate(delta);
+        left_pupil_.setTransformation(gaze_transform);
+
+        gaze_transform = right_eye_face_transform_;
+        gaze_transform.translate(delta);
+        right_pupil_.setTransformation(gaze_transform);
     }
 
     void setExpression();
@@ -58,23 +80,25 @@ public:
             sf::Transform face_center_transform(1.0f, 0.0f, 800 * 0.75f,
                                                 0.0f, 1.0f, 600 * 0.5f,
                                                 0.0f, 0.0f, 1.f);
-            mouth_.setTransformation(face_center_transform);
+            // mouth_.setTransformation(face_center_transform);
         }
 
         renderWindow.clear(background_colour_);
 
-        // left_iris_.draw(renderWindow, frame_delta_time);
-        // right_iris_.draw(renderWindow, frame_delta_time);
+        left_iris_.draw(renderWindow, frame_delta_time);
+        right_iris_.draw(renderWindow, frame_delta_time);
 
-        // left_pupil_.draw(renderWindow, frame_delta_time);
-        // right_pupil_.draw(renderWindow, frame_delta_time);
+        left_pupil_.draw(renderWindow, frame_delta_time);
+        right_pupil_.draw(renderWindow, frame_delta_time);
 
-        // left_eyebrow_.draw(renderWindow, frame_delta_time);
-        // right_eyebrow_.draw(renderWindow, frame_delta_time);
+        left_eyebrow_.draw(renderWindow, frame_delta_time);
+        right_eyebrow_.draw(renderWindow, frame_delta_time);
 
         mouth_.draw(renderWindow, frame_delta_time);
 
-        // nose_.draw(renderWindow, frame_delta_time);
+        nose_.draw(renderWindow, frame_delta_time);
+
+        // renderWindow.draw(DEBUG_GAZE_MARKER, left_eye_face_transform_);
     }
 
 private:
@@ -87,9 +111,14 @@ private:
     Nose nose_;
     Mouth mouth_;
     sf::Color background_colour_;
+    sf::Transform left_eye_face_transform_;
+    sf::Transform right_eye_face_transform_;
 
     bool DEBUG_ONCE;
     float DEBUG_TIMER;
+    sf::CircleShape DEBUG_GAZE_MARKER;
+    sf::Transform DEBUG_GAZE_TRANSFORM;
+    sf::Transform DEBUG_LEFT_EYE_TRANSFORM;
 };
 
 void Face::configure(const FaceConfiguration &face_config)
@@ -108,24 +137,27 @@ void Face::configure(const FaceConfiguration &face_config)
                                         0.0f, 1.0f, WINDOW_HEIGHT * face_config.face_center,
                                         0.0f, 0.0f, 1.f);
 
-    sf::Transform left_eye_face_transform;
-    left_eye_face_transform.combine(face_center_transform);
-    left_eye_face_transform.translate(-0.5f * face_config.eye_spacing * WINDOW_WIDTH, WINDOW_HEIGHT * face_config.eye_y);
-    left_eye_face_transform.scale(face_config.pupil_scaling);
+    // sf::Transform left_eye_face_transform;
+    left_eye_face_transform_ = sf::Transform::Identity;
+    left_eye_face_transform_.combine(face_center_transform);
+    left_eye_face_transform_.translate(-0.5f * face_config.eye_spacing * WINDOW_WIDTH, WINDOW_HEIGHT * face_config.eye_y);
+    left_eye_face_transform_.scale(face_config.pupil_scaling);
+    // DEBUG_LEFT_EYE_TRANSFORM = left_eye_face_transform;
 
-    sf::Transform right_eye_face_transform;
-    right_eye_face_transform.combine(face_center_transform);
-    right_eye_face_transform.translate(0.5f * face_config.eye_spacing * WINDOW_WIDTH, WINDOW_HEIGHT * face_config.eye_y);
-    right_eye_face_transform.scale(face_config.pupil_scaling);
-    right_eye_face_transform.combine(g_mirror_transform);
+    // sf::Transform right_eye_face_transform;
+    right_eye_face_transform_ = sf::Transform::Identity;
+    right_eye_face_transform_.combine(face_center_transform);
+    right_eye_face_transform_.translate(0.5f * face_config.eye_spacing * WINDOW_WIDTH, WINDOW_HEIGHT * face_config.eye_y);
+    right_eye_face_transform_.scale(face_config.pupil_scaling);
+    // right_eye_face_transform_.combine(g_mirror_transform);
 
     sf::Transform left_eyebrow_eye_transform;
-    left_eyebrow_eye_transform.combine(left_eye_face_transform);
+    left_eyebrow_eye_transform.combine(left_eye_face_transform_);
     left_eyebrow_eye_transform.translate(0, face_config.eyebrow_spacing * WINDOW_HEIGHT);
     left_eyebrow_eye_transform.scale(face_config.eyebrow_scaling);
 
     sf::Transform right_eyebrow_eye_transform;
-    right_eyebrow_eye_transform.combine(right_eye_face_transform);
+    right_eyebrow_eye_transform.combine(right_eye_face_transform_);
     right_eyebrow_eye_transform.translate(0, face_config.eyebrow_spacing * WINDOW_HEIGHT);
     right_eyebrow_eye_transform.scale(face_config.eyebrow_scaling);
 
@@ -145,25 +177,25 @@ void Face::configure(const FaceConfiguration &face_config)
 
     // iris
     left_iris_.setShape(face_config.iris_shape);
-    left_iris_.setTransformation(left_eye_face_transform);
+    left_iris_.setTransformation(left_eye_face_transform_);
     left_iris_.setColour(face_config.iris_colour);
     left_iris_.setSquircleRadius(face_config.iris_squircle_radius);
     left_iris_.show(face_config.show_iris);
 
     right_iris_.setShape(face_config.iris_shape);
-    right_iris_.setTransformation(right_eye_face_transform);
+    right_iris_.setTransformation(right_eye_face_transform_);
     right_iris_.setColour(face_config.iris_colour);
     right_iris_.setSquircleRadius(face_config.iris_squircle_radius);
     right_iris_.show(face_config.show_iris);
 
     // left pupil
-    left_pupil_.setTransformation(left_eye_face_transform);
+    left_pupil_.setTransformation(left_eye_face_transform_);
     left_pupil_.setColour(face_config.pupil_colour);
     left_pupil_.setSquircleRadius(face_config.pupil_squircle_radius);
     left_pupil_.setPupilHighlightShow(face_config.show_pupil_highlights);
 
     // right pupil
-    right_pupil_.setTransformation(right_eye_face_transform);
+    right_pupil_.setTransformation(right_eye_face_transform_);
     right_pupil_.setColour(face_config.pupil_colour);
     right_pupil_.setSquircleRadius(face_config.pupil_squircle_radius);
     right_pupil_.setPupilHighlightShow(face_config.show_pupil_highlights);

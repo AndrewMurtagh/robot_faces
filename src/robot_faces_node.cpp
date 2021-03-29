@@ -155,8 +155,8 @@ bool gazeCallback(robot_faces::Gaze::Request &req, robot_faces::Gaze::Response &
 {
     ROS_INFO_STREAM("Change Gaze Request " << req.elevation << ", " << req.azimuth);
 
-    const float gaze_elevation = clamp(req.elevation, 1.0f, 1.0f);
-    const float gaze_azimuth = clamp(req.azimuth, 1.0f, 1.0f);
+    const float gaze_elevation = clamp(req.elevation, -1.0f, 1.0f);
+    const float gaze_azimuth = clamp(req.azimuth, -1.0f, 1.0f);
     face.setGaze(sf::Vector2f(gaze_elevation, gaze_azimuth));
     res.handled = true;
 

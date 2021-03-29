@@ -112,8 +112,6 @@ timeout: 0"
 
 ## TODO
 
-- [ ] Gaze
-
 - [ ] Expressions
 
 - [ ] Saccades
@@ -133,6 +131,8 @@ timeout: 0"
 - [ ] Add timeout and speed to speaking service.
 
 - [ ] Add timeout to gaze service.
+
+- [x] Gaze
 
 - [x] Mouth speaking
 
