@@ -114,8 +114,6 @@ timeout: 0"
 
 - [ ] Expressions
 
-- [ ] Saccades
-
 - [ ] Handle window size changing and resize entities
 
 - [ ] Reset to defaults option in dynamic_reconfigure
@@ -131,6 +129,8 @@ timeout: 0"
 - [ ] Add timeout and speed to speaking service.
 
 - [ ] Add timeout to gaze service.
+
+- [x] Saccades
 
 - [x] Gaze
 

@@ -49,6 +49,9 @@ const int DEFAULT_WINDOW_WIDTH              = 800; // px
 const int DEFAULT_WINDOW_HEIGHT             = 600; // px
 
 // eyes
+const float MEAN_SACCADE_TIME               = 240.0f; // ms
+const float STDDEV_SACCADE_TIME             = 50.0f; // ms
+const float STDDEV_SACCADE_POS              = 8.0f; // px
 const float EYE_SPEED                       = 0.01f; // px / ms
 const sf::Vector2f MAX_GAZE_SIZE            = sf::Vector2f(120.0f, 80.0f);
 const float PUPIL_IRIS_DELTA                = 0.8f; // the difference in movement between the pupil and iris

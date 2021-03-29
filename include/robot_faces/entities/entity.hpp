@@ -25,11 +25,6 @@ public:
         reference_marker_.setFillColor(REF_MARKER_COLOUR);
     }
 
-    const sf::Transform getTransformation() const
-    {
-        return transform_;
-    }
-
     void setTransformation(const sf::Transform transform) override
     {
         transform_ = transform;
@@ -46,7 +41,7 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
     {
-        renderWindow.draw(reference_marker_, transform_);
+        // renderWindow.draw(reference_marker_, transform_);
     }
 
 protected:
