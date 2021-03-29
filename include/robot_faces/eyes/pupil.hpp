@@ -42,6 +42,10 @@ public:
         target_transformation_ = transform;
     }
 
+    const sf::Transform getTransformation() const override
+    {
+        return target_transformation_;
+    }
 
     void setColour(const sf::Color colour) override
     {

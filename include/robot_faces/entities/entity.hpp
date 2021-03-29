@@ -25,6 +25,11 @@ public:
         reference_marker_.setFillColor(REF_MARKER_COLOUR);
     }
 
+    const sf::Transform getTransformation() const
+    {
+        return transform_;
+    }
+
     void setTransformation(const sf::Transform transform) override
     {
         transform_ = transform;
