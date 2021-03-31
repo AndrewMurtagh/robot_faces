@@ -49,21 +49,15 @@ You can change the expression of the face to a number of predefined expressions 
 
 1. `NEUTRAL`
 
-2. `SADNESS`
+2. `SAD`
 
-3. `FEAR`
+3. `SCARED`
 
-4. `DISGUST`
+4. `ANGRY`
 
-5. `ANGER`
+5. `HAPPY`
 
-6. `JOY`
-
-7. `HAPPINESS`
-
-8. `AWE`
-
-9. `SURPRISE`
+6. `SHOCKED`
 
 The default expression is `NEUTRAL`. You can set a timeout in milliseconds for how long the expression should be held for, after it expires the expression will return to its previous state. If the timeout is set to zero the change in expression will be permanent.
 
@@ -76,7 +70,7 @@ rosservice call /robot_face/expression "header:
     secs: 0
     nsecs: 0
   frame_id: ''
-expression: 'surprise'
+expression: 'HAPPY'
 timeout: 0"
 ```
 
