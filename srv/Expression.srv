@@ -1,4 +1,3 @@
 string expression
-int64 timeout #timeout in milliseconds
 ---
 bool handled

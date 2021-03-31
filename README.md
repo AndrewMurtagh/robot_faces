@@ -98,31 +98,33 @@ azimuth: 1.0"
 
 ## TODO
 
-- [ ] Expressions
+- [ ] Change from services to topics.
 
-- [ ] Handle window size changing and resize entities
+- [ ] Expressions.
 
-- [ ] Reset to defaults option in dynamic_reconfigure
+- [ ] Handle window size changing and resize entities.
 
-- [ ] Set full screen window
+- [ ] Reset to defaults option in dynamic_reconfigure.
 
-- [ ] Let annulus nose x and y vary independently
+- [ ] Set full screen window.
 
-- [ ] Check for changes in face config before sending to face facade
+- [ ] Let annulus nose x and y vary independently.
 
-- [ ] Seperate header and implementation files
+- [ ] Check for changes in face config before sending to face facade.
+
+- [ ] Seperate header and implementation files.
 
 - [ ] Add timeout and speed to speaking service.
 
 - [ ] Add timeout to gaze service.
 
-- [x] Saccades
+- [x] Saccades.
 
-- [x] Gaze
+- [x] Gaze.
 
-- [x] Mouth speaking
+- [x] Mouth speaking.
 
-- [x] Make squircle mouth inherit from squircle entity
+- [x] Make squircle mouth inherit from squircle entity.
 
 ## Notes
 

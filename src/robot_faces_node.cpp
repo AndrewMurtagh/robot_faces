@@ -12,6 +12,7 @@
 #include <robot_faces/ParametersConfig.h>
 #include <robot_faces/Speaking.h>
 #include <robot_faces/Gaze.h>
+#include <robot_faces/Expression.h>
 #include <robot_faces/consts.hpp>
 #include <robot_faces/face.hpp>
 #include <robot_faces/face-config.hpp>
@@ -164,6 +165,47 @@ bool gazeCallback(robot_faces::Gaze::Request &req, robot_faces::Gaze::Response &
 }
 
 /*
+expression callback
+*/
+bool expressionCallback(robot_faces::Expression::Request &req, robot_faces::Expression::Response &res)
+{
+    ROS_INFO_STREAM("Change Expression Request " << req.expression);
+    
+    std::string expression = req.expression;
+
+    std::transform(expression.begin(), expression.end(), expression.begin(), [](unsigned char c) { return std::toupper(c); });
+
+    if (expression == NEUTRAL_STR)
+    {
+        face.setExpression(Expression::Neutral);
+    }
+    else if (expression == SAD_STR)
+    {
+        face.setExpression(Expression::Sad);
+    }
+    else if (expression == SCARED_STR)
+    {
+        face.setExpression(Expression::Scared);
+    }
+    else if (expression == ANGRY_STR)
+    {
+        face.setExpression(Expression::Angry);
+    }
+    else if (expression == HAPPY_STR)
+    {
+        face.setExpression(Expression::Happy);
+    }
+    else if (expression == SHOCKED_STR)
+    {
+        face.setExpression(Expression::Shocked);
+    }
+
+    res.handled = true;
+
+    return true;
+}
+
+/*
 main
 */
 int main(int argc, char **argv)
@@ -181,6 +223,7 @@ int main(int argc, char **argv)
 
     ros::ServiceServer speaking_server = node_handle.advertiseService("speaking", speakingCallback);
     ros::ServiceServer gaze_server = node_handle.advertiseService("gaze", gazeCallback);
+    ros::ServiceServer expression_server = node_handle.advertiseService("expression", expressionCallback);
 
     // set the framerate to be the same as the monitor's refresh rate to reduce the chance of adverse visual artifacts - tearing.
     // sometimes vertical synchronistion is forced off by the graphic card so we should fall back to limiting the framerate

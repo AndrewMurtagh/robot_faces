@@ -103,7 +103,9 @@ public:
         right_pupil_.setTransformation(temp_transform);
     }
 
-    void setExpression();
+    void setExpression(const Expression expression) {
+        
+    }
 
     void setPreset();
 

@@ -3,6 +3,14 @@
 
 #include <regex>
 
+
+std::regex g_rgba_regex("^(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9])$");
+const sf::Transform g_mirror_transform(-1.0f, 0.0f, 0.0f,
+                                        0.0f, 1.0f, 0.0f,
+                                        0.0f, 0.0f, 1.0f);
+
+
+
 enum class EyebrowShape
 {
     Rectangle,
@@ -36,10 +44,24 @@ enum class MouthShape
     Line
 };
 
-std::regex g_rgba_regex("^(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9]),?(25[0-5]|2[0-4][0-9]|1[0-9]?[0-9]?|[1-9][0-9]?|[0-9])$");
-const sf::Transform g_mirror_transform(-1.0f, 0.0f, 0.0f,
-                                        0.0f, 1.0f, 0.0f,
-                                        0.0f, 0.0f, 1.0f);
+
+enum class Expression
+{
+    Neutral,
+    Sad,
+    Scared,
+    Angry,
+    Happy,
+    Shocked
+};
+
+const std::string NEUTRAL_STR               = "NEUTRAL";
+const std::string SAD_STR                   = "SAD";
+const std::string SCARED_STR                = "SCARED";
+const std::string ANGRY_STR                 = "ANGRY";
+const std::string HAPPY_STR                 = "HAPPY";
+const std::string SHOCKED_STR               = "SHOCKED";
+
 
 const int FRAME_RATE                        = 30; // fps
 const int NUM_CORNER_POINTS                 = 25; // the number of points used to discretize a corner
@@ -73,9 +95,5 @@ const sf::Vector2f MOUTH_SIZE               = sf::Vector2f(200.0f, 100.0f);
 const sf::Vector2f SQUIRCLE_MOUTH_RADIUS    = sf::Vector2f(1.0f, 1.0f);
 const float SPEAKING_ELON_CLOSE_ENOUGH      = 0.01f; // Y scale
 const float SPEAKING_SPEED                  = 0.01f; // px / ms
-
-// reference markers
-const sf::Color REF_MARKER_COLOUR           = sf::Color(sf::Color::Cyan);
-const int REF_MARKER_RADIUS                 = 5; // pixels
 
 #endif // CONSTS_H
