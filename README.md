@@ -1,12 +1,13 @@
 # robot_faces Robot Operating System package
 
 
+[![stability-unstable](https://img.shields.io/badge/stability-unstable-yellow.svg)](https://github.com/emersion/stability-badges#unstable)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/AndrewMurtagh/robot_faces/graphs/commit-activity)
 [![GitHub license](https://img.shields.io/github/license/AndrewMurtagh/robot_faces.svg)](https://github.com/AndrewMurtagh/robot_faces/blob/master/LICENSE)
 [![GitHub contributors](https://img.shields.io/github/contributors/AndrewMurtagh/robot_faces.svg)](https://GitHub.com/AndrewMurtagh/robot_faces/graphs/contributors/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-
+**CURRENT STABILITY STATUS: Not currently stable.**
 
 ## Table of Contents
 
@@ -97,6 +98,8 @@ azimuth: 1.0"
 - Expression intensities.
 
 ## TODO
+
+- [ ] Reverse direction of eyebrow spacing.
 
 - [ ] Change from services to topics.
 
