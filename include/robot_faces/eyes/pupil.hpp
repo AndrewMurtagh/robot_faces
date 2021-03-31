@@ -37,6 +37,11 @@ public:
         squircle_shape_.setRadius(sf::Vector2f(PUPIL_SIZE / 2.0f * squircle_radius.x, PUPIL_SIZE / 2.0f * squircle_radius.y));
     }
 
+    void show(const bool show)
+    {
+        show_ = show;
+    }
+
     void setTransformation(const sf::Transform transform) override
     {
         target_transformation_ = transform;
@@ -50,6 +55,10 @@ public:
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
     {
+
+        if (!show_)
+            return;
+
         const float* curr_trans_matrix = curr_transformation_.getMatrix();
         const float* target_trans_matrix = target_transformation_.getMatrix();
 
@@ -87,6 +96,7 @@ public:
 
 private:
     bool show_pupil_highlight_;
+    bool show_;
     sf::SquircleShape squircle_shape_;
     sf::CircleShape pupil_highlight_shape_one_;
     sf::CircleShape pupil_highlight_shape_two_;

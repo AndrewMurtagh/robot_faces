@@ -32,14 +32,14 @@ struct TransformTree
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
     {
-        
-        renderWindow.draw(marker_, face_center_transform_);
-        renderWindow.draw(marker_, left_eye_transform_);
-        renderWindow.draw(marker_, right_eye_transform_);
-        renderWindow.draw(marker_, left_eyebrow_transform_);
-        renderWindow.draw(marker_, right_eyebrow_transform_);
-        renderWindow.draw(marker_, nose_transform_);
-        renderWindow.draw(marker_, mouth_transform_);
+
+        // renderWindow.draw(marker_, face_center_transform_);
+        // renderWindow.draw(marker_, left_eye_transform_);
+        // renderWindow.draw(marker_, right_eye_transform_);
+        // renderWindow.draw(marker_, left_eyebrow_transform_);
+        // renderWindow.draw(marker_, right_eyebrow_transform_);
+        // renderWindow.draw(marker_, nose_transform_);
+        // renderWindow.draw(marker_, mouth_transform_);
     }
 
     sf::Transform face_center_transform_;
@@ -49,7 +49,7 @@ struct TransformTree
     sf::Transform right_eyebrow_transform_;
     sf::Transform nose_transform_;
     sf::Transform mouth_transform_;
-    
+
     sf::Vector2f gaze_offset_vec;
     sf::Vector2f saccade_offset_vec;
     sf::CircleShape marker_;
@@ -124,7 +124,7 @@ public:
 
                 temp_transform = transform_tree_.right_eye_transform_;
                 temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
-                right_iris_.setTransformation(temp_transform);
+                right_iris_.setTransformation(temp_transform.combine(g_mirror_transform));
 
                 temp_transform = transform_tree_.left_eye_transform_;
                 temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
@@ -143,7 +143,7 @@ public:
         }
 
         DEBUG_TIMER += frame_delta_time;
-        if (DEBUG_TIMER > 2000 && DEBUG_ONCE)
+        if (DEBUG_TIMER > 8000 && DEBUG_ONCE)
         {
             DEBUG_ONCE = false;
             std::cout << "move mouth" << std::endl;
@@ -152,6 +152,13 @@ public:
             //                                     0.0f, 1.0f, 600 * 0.5f,
             //                                     0.0f, 0.0f, 1.f);
             // mouth_.setTransformation(face_center_transform);
+            sf::Transform temp_transform = transform_tree_.left_eyebrow_transform_;
+            temp_transform.translate(sf::Vector2f(30.0f, 30.0f));
+            left_eyebrow_.setTransformation(temp_transform);
+
+            temp_transform = transform_tree_.right_eyebrow_transform_;
+            temp_transform.translate(sf::Vector2f(30.0f, 30.0f));
+            right_eyebrow_.setTransformation(temp_transform.combine(g_mirror_transform));
         }
 
         renderWindow.clear(background_colour_);
@@ -205,7 +212,6 @@ void Face::configure(const FaceConfiguration &face_config)
     background_colour_ = face_config.background_colour;
     nose_.setBackgroundColour(face_config.background_colour);
 
-
     /*
     Update transform tree structure
     */
@@ -257,8 +263,9 @@ void Face::configure(const FaceConfiguration &face_config)
     left_iris_.setSquircleRadius(face_config.iris_squircle_radius);
     left_iris_.show(face_config.show_iris);
 
+    sf::Transform right_iris_copy = transform_tree_.right_eye_transform_;
     right_iris_.setShape(face_config.iris_shape);
-    right_iris_.setTransformation(transform_tree_.right_eye_transform_);
+    right_iris_.setTransformation(right_iris_copy.combine(g_mirror_transform));
     right_iris_.setColour(face_config.iris_colour);
     right_iris_.setSquircleRadius(face_config.iris_squircle_radius);
     right_iris_.show(face_config.show_iris);
@@ -268,12 +275,14 @@ void Face::configure(const FaceConfiguration &face_config)
     left_pupil_.setColour(face_config.pupil_colour);
     left_pupil_.setSquircleRadius(face_config.pupil_squircle_radius);
     left_pupil_.setPupilHighlightShow(face_config.show_pupil_highlights);
+    left_pupil_.show(face_config.show_pupil);
 
     // right pupil
     right_pupil_.setTransformation(transform_tree_.right_eye_transform_);
     right_pupil_.setColour(face_config.pupil_colour);
     right_pupil_.setSquircleRadius(face_config.pupil_squircle_radius);
     right_pupil_.setPupilHighlightShow(face_config.show_pupil_highlights);
+    right_pupil_.show(face_config.show_pupil);
 
     /*
     Eyebrows
@@ -283,8 +292,9 @@ void Face::configure(const FaceConfiguration &face_config)
     left_eyebrow_.setColour(face_config.eyebrow_colour);
     left_eyebrow_.show(face_config.show_eyebrows);
 
+    sf::Transform right_eyebrow_copy = transform_tree_.right_eyebrow_transform_;
     right_eyebrow_.setShape(face_config.eyebrow_shape);
-    right_eyebrow_.setTransformation(transform_tree_.right_eyebrow_transform_);
+    right_eyebrow_.setTransformation(right_eyebrow_copy.combine(g_mirror_transform));
     right_eyebrow_.setColour(face_config.eyebrow_colour);
     right_eyebrow_.show(face_config.show_eyebrows);
 
