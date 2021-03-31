@@ -41,11 +41,19 @@ Roslaunch is recommended.
 
 ## API
 
-The face can be interacted with through ROS services.
+The face can be interacted with through ROS serivces.
+
+### Speaking
+
+You can set the face to speaking or not through the `/robot_face/speaking` service. Example:
+
+```
+rosservice call /robot_face/speaking "speak: true"
+```
 
 ### Expression
 
-You can change the expression of the face to a number of predefined expressions listed below through the a `/robot_face/expression` service call.
+You can change the expression of the face to a number of predefined expressions listed below through the `/robot_face/expression` service. The default expression is `NEUTRAL`.  The supported expressions are:
 
 1. `NEUTRAL`
 
@@ -59,37 +67,21 @@ You can change the expression of the face to a number of predefined expressions 
 
 6. `SHOCKED`
 
-The default expression is `NEUTRAL`. You can set a timeout in milliseconds for how long the expression should be held for, after it expires the expression will return to its previous state. If the timeout is set to zero the change in expression will be permanent.
 
-Below is an example of permanently changing the expression to surprise. The expression value is case-insensitive.
+The type of the `expression` in the service is `string` and is case-insensitive. Values not on the above list will be ignored. Example of a call to the expression service.
 
 ```
-rosservice call /robot_face/expression "header:
-  seq: 0
-  stamp:
-    secs: 0
-    nsecs: 0
-  frame_id: ''
-expression: 'HAPPY'
-timeout: 0"
+rosservice call /robot_face/expression "expression: 'HAPPY'"
 ```
+
 
 ### Gaze
 
-You can direct the gaze of the eyes through the `/robot_face/gaze` service call. Elevation is up and down and and Azimuth is left and right. Each variable ranges between -1.0 and 1.0 where -1.0 and 1.0 are the maximum extent of the gaze and 0.0 is looking straight ahead. Positive azimuth looks to the face's left, negative azimuth looks to the face's right, positive elevation looks up and negative elevation looks down.
-
-As with the expression service call, you can set a timeout in milliseconds after which, the gaze will return to center; or leave it at zero to permanently change the gaze.
+You can direct the gaze of the eyes through the `/robot_face/gaze` service call. Elevation is up and down and and Azimuth is left and right. Each variable ranges between -1.0 and 1.0 where -1.0 and 1.0 are the maximum extent of the gaze and 0.0 is looking straight ahead. Positive azimuth looks to the face's left, negative azimuth looks to the face's right, positive elevation looks up and negative elevation looks down. Any value outside of -1.0 and 1.0 inclusive will be clamped. It is up to the client to determine the value of gaze based on their particular application. 
 
 ```
-rosservice call /robot_face/gaze "header:
-  seq: 0
-  stamp:
-    secs: 0
-    nsecs: 0
-  frame_id: ''
-elevation: 0.0
-azimuth: 0.0
-timeout: 0"
+rosservice call /robot_face/gaze "elevation: -0.7
+azimuth: 1.0"
 ```
 
 ## Ideas
