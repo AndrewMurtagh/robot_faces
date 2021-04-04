@@ -21,6 +21,18 @@ public:
     void setSpeaking(const bool);
 
     void setSquircleRadius(const sf::Vector2f);
+
+    void setExpression(const Expression expression) override
+    {
+        std::cout << "Mouth::setExpression" << std::endl;
+        // set squircle transform here
+        // call line mouth expression
+        for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(MouthShape::Line)); range.first != range.second; ++range.first)
+        {
+            std::shared_ptr<LineMouth> line_cast = std::static_pointer_cast<LineMouth>(range.first->second);
+            line_cast->setExpression(expression);
+        }
+    }
 };
 
 Mouth::Mouth() : ProxyEntity(MouthShape::Line, MOUTH_ENTITIES_) {}

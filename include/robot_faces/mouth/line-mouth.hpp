@@ -18,11 +18,73 @@ public:
 
     void setColour(const sf::Color) override;
 
+    void setExpression(const Expression expression) override
+    {
+        std::cout << "LineMouth::setExpression" << std::endl;
+        switch (expression)
+        {
+
+        default:
+        case Expression::Neutral:
+            curr_upper_points = neutral_upper_points;
+            curr_lower_points = neutral_lower_points;
+        
+        break;
+
+        case Expression::Sad:
+            curr_upper_points = sad_upper_points;
+            curr_lower_points = sad_lower_points;
+        
+        break;
+
+        case Expression::Scared:
+            curr_upper_points = scared_upper_points;
+            curr_lower_points = scared_lower_points;
+        
+        break;
+
+        case Expression::Angry:
+            curr_upper_points = angry_upper_points;
+            curr_lower_points = angry_lower_points;
+        
+        break;
+
+        case Expression::Happy:
+            curr_upper_points = happy_upper_points;
+            curr_lower_points = happy_lower_points;
+        
+        break;
+
+        case Expression::Shocked:
+            curr_upper_points = shocked_upper_points;
+            curr_lower_points = shocked_lower_points;
+        break;
+        }
+    }
+
     void draw(sf::RenderWindow &, const float) override;
 
 private:
-    BezierLine upper_mouth_bezier_control_points_;
-    BezierLine lower_mouth_bezier_control_points_;
+    BezierLine neutral_upper_points;
+    BezierLine neutral_lower_points;
+
+    BezierLine sad_upper_points;
+    BezierLine sad_lower_points;
+
+    BezierLine scared_upper_points;
+    BezierLine scared_lower_points;
+
+    BezierLine angry_upper_points;
+    BezierLine angry_lower_points;
+
+    BezierLine happy_upper_points;
+    BezierLine happy_lower_points;
+
+    BezierLine shocked_upper_points;
+    BezierLine shocked_lower_points;
+
+    BezierLine curr_upper_points;
+    BezierLine curr_lower_points;
 
     std::vector<sf::Vector2f> upper_bezier_line_points_;
     std::vector<sf::Vector2f> lower_bezier_line_points_;
@@ -43,7 +105,15 @@ LineMouth::LineMouth() : is_speaking_(false),
                          elongation_dist_(0.0, 1.0)
 {
 
-    readBezierPointsFromFile(upper_mouth_bezier_control_points_, lower_mouth_bezier_control_points_, "/res/mouth/neutral.txt");
+    readBezierPointsFromFile(neutral_upper_points, neutral_lower_points, "/res/mouth/neutral.txt");
+    readBezierPointsFromFile(sad_upper_points, sad_lower_points, "/res/mouth/sad.txt");
+    readBezierPointsFromFile(scared_upper_points, scared_lower_points, "/res/mouth/scared.txt");
+    readBezierPointsFromFile(angry_upper_points, angry_lower_points, "/res/mouth/angry.txt");
+    readBezierPointsFromFile(happy_upper_points, happy_lower_points, "/res/mouth/happy.txt");
+    readBezierPointsFromFile(shocked_upper_points, shocked_lower_points, "/res/mouth/shocked.txt");
+
+    curr_upper_points = neutral_upper_points;
+    curr_lower_points = neutral_lower_points;
 
     mouth_fillet_.setRadius(LINE_MOUTH_THICKNESS / 2.0f);
     mouth_fillet_.setFillColor(colour_);
@@ -76,26 +146,26 @@ void LineMouth::setColour(const sf::Color colour)
 
 void LineMouth::draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
 {
-    if (is_speaking_)
-    {
-        if (abs(target_elongation_scale_ - curr_elongation_scale_) < SPEAKING_ELON_CLOSE_ENOUGH)
-        {
-            curr_elongation_scale_ = target_elongation_scale_;
-            target_elongation_scale_ = elongation_dist_(random_engine_);
-        }
-        else
-        {
-            float delta = frame_delta_time * SPEAKING_SPEED * (target_elongation_scale_ - curr_elongation_scale_);
-            curr_elongation_scale_ += delta;
-        }
+    // if (is_speaking_)
+    // {
+    //     if (abs(target_elongation_scale_ - curr_elongation_scale_) < SPEAKING_ELON_CLOSE_ENOUGH)
+    //     {
+    //         curr_elongation_scale_ = target_elongation_scale_;
+    //         target_elongation_scale_ = elongation_dist_(random_engine_);
+    //     }
+    //     else
+    //     {
+    //         float delta = frame_delta_time * SPEAKING_SPEED * (target_elongation_scale_ - curr_elongation_scale_);
+    //         curr_elongation_scale_ += delta;
+    //     }
 
-        upper_mouth_bezier_control_points_.start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, curr_elongation_scale_ * MOUTH_SIZE.y);
-        upper_mouth_bezier_control_points_.end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, curr_elongation_scale_ * MOUTH_SIZE.y);
-        lower_mouth_bezier_control_points_.start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, -1.0f * curr_elongation_scale_ * MOUTH_SIZE.y);
-        lower_mouth_bezier_control_points_.end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, -1.0f * curr_elongation_scale_ * MOUTH_SIZE.y);
-    }
-    upper_bezier_line_points_ = upper_mouth_bezier_control_points_.generateCurve();
-    lower_bezier_line_points_ = lower_mouth_bezier_control_points_.generateCurve();
+    //     upper_mouth_bezier_control_points_.start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, curr_elongation_scale_ * MOUTH_SIZE.y);
+    //     upper_mouth_bezier_control_points_.end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, curr_elongation_scale_ * MOUTH_SIZE.y);
+    //     lower_mouth_bezier_control_points_.start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, -1.0f * curr_elongation_scale_ * MOUTH_SIZE.y);
+    //     lower_mouth_bezier_control_points_.end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, -1.0f * curr_elongation_scale_ * MOUTH_SIZE.y);
+    // }
+    upper_bezier_line_points_ = curr_upper_points.generateCurve();
+    lower_bezier_line_points_ = curr_lower_points.generateCurve();
 
     renderWindow.draw(generateLineWithThickness(upper_bezier_line_points_, colour_, LINE_MOUTH_THICKNESS / 2.0f), transform_);
     renderWindow.draw(generateLineWithThickness(lower_bezier_line_points_, colour_, LINE_MOUTH_THICKNESS / 2.0f), transform_);

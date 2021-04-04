@@ -129,6 +129,7 @@ void Face::setGaze(const sf::Vector2f gaze_vector)
 void Face::setExpression(const Expression expression)
 {
     // gaze, eyebrows, mouth
+    mouth_.setExpression(expression);
 
     switch (expression)
     {
