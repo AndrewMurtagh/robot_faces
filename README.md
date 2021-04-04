@@ -78,7 +78,7 @@ rosservice call /robot_face/expression "expression: 'HAPPY'"
 
 ### Gaze
 
-You can direct the gaze of the eyes through the `/robot_face/gaze` service call. Elevation is up and down and and Azimuth is left and right. Each variable ranges between -1.0 and 1.0 where -1.0 and 1.0 are the maximum extent of the gaze and 0.0 is looking straight ahead. Positive azimuth looks to the face's left, negative azimuth looks to the face's right, positive elevation looks up and negative elevation looks down. Any value outside of -1.0 and 1.0 inclusive will be clamped. It is up to the client to determine the value of gaze based on their particular application. 
+You can direct the gaze of the eyes through the `/robot_face/gaze` service call. Elevation is up and down and and Azimuth is left and right. Each variable ranges between -1.0 and 1.0 where -1.0 and 1.0 are the maximum extent of the gaze and 0.0 is looking straight ahead. Positive azimuth looks to the face's left, negative azimuth looks to the face's right, positive elevation looks down and negative elevation looks up. Any value outside of -1.0 and 1.0 inclusive will be clamped. It is up to the client to determine the value of gaze based on their particular application. 
 
 ```
 rosservice call /robot_face/gaze "elevation: -0.7

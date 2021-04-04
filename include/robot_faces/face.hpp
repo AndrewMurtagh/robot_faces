@@ -93,6 +93,8 @@ private:
     // position to move for a saccade
     std::normal_distribution<float> saccade_pos_dist_;
 
+    void setGaze_(const sf::Vector2f);
+
     bool DEBUG_ONCE;
     float DEBUG_TIMER;
 };
@@ -120,29 +122,55 @@ void Face::setSpeaking(const bool speaking)
 
 void Face::setGaze(const sf::Vector2f gaze_vector)
 {
+    setGaze_(gaze_vector);
     // std::cout << gaze_vector.x << " , " << gaze_vector.y << std::endl;
-
-    transform_tree_.gaze_offset_vec = sf::Vector2f(gaze_vector.x * MAX_GAZE_SIZE.x, gaze_vector.y * MAX_GAZE_SIZE.y);
-
-    sf::Transform temp_transform = transform_tree_.left_eye_transform_;
-    temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
-    left_iris_.setTransformation(temp_transform);
-
-    temp_transform = transform_tree_.right_eye_transform_;
-    temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
-    right_iris_.setTransformation(temp_transform);
-
-    temp_transform = transform_tree_.left_eye_transform_;
-    temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
-    left_pupil_.setTransformation(temp_transform);
-
-    temp_transform = transform_tree_.right_eye_transform_;
-    temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
-    right_pupil_.setTransformation(temp_transform);
 }
 
 void Face::setExpression(const Expression expression)
 {
+    // gaze, eyebrows, mouth
+
+    switch (expression)
+    {
+
+    default:
+    case Expression::Neutral:
+    {
+        setGaze_(sf::Vector2f(0.0, 0.0));
+    }
+    break;
+
+    case Expression::Sad:
+    {
+        setGaze_(sf::Vector2f(0.0, 1.0));
+    }
+
+    break;
+
+    case Expression::Scared:
+    {
+        setGaze_(sf::Vector2f(0.0, 0.0));
+    }
+    break;
+
+    case Expression::Angry:
+    {
+        setGaze_(sf::Vector2f(0.0, 0.0));
+    }
+    break;
+
+    case Expression::Happy:
+    {
+        setGaze_(sf::Vector2f(0.0, -0.2));
+    }
+    break;
+
+    case Expression::Shocked:
+    {
+        setGaze_(sf::Vector2f(0.0, 0.0));
+    }
+    break;
+    }
 }
 
 void Face::configure(const FaceConfiguration &face_config)
@@ -327,6 +355,27 @@ void Face::draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
     nose_.draw(renderWindow, frame_delta_time);
 
     transform_tree_.draw(renderWindow, frame_delta_time);
+}
+
+void Face::setGaze_(const sf::Vector2f gaze_vector)
+{
+    transform_tree_.gaze_offset_vec = sf::Vector2f(gaze_vector.x * MAX_GAZE_SIZE.x, gaze_vector.y * MAX_GAZE_SIZE.y);
+
+    sf::Transform temp_transform = transform_tree_.left_eye_transform_;
+    temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
+    left_iris_.setTransformation(temp_transform);
+
+    temp_transform = transform_tree_.right_eye_transform_;
+    temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
+    right_iris_.setTransformation(temp_transform.combine(g_mirror_transform));
+
+    temp_transform = transform_tree_.left_eye_transform_;
+    temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
+    left_pupil_.setTransformation(temp_transform);
+
+    temp_transform = transform_tree_.right_eye_transform_;
+    temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
+    right_pupil_.setTransformation(temp_transform);
 }
 
 #endif // FACE_H
