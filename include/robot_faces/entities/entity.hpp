@@ -11,36 +11,48 @@
 class Entity : public IEntity
 {
 public:
-    Entity() : mirrored_(false)
-    {
-    }
+    Entity();
 
-    Entity(bool mirror) : mirrored_(mirror)
-    {
-    }
+    Entity(bool);
 
-    void setTransformation(const sf::Transform transform) override
-    {
-        transform_ = transform;
-    }
+    void setTransformation(const sf::Transform) override;
 
-    void setColour(const sf::Color colour) override
-    {
-        colour_ = colour;
-    }
+    void setColour(const sf::Color) override;
 
-    void setExpression(const int) override
-    {
-    }
+    void setExpression(const int) override;
 
-    void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override
-    {
-    }
+    void draw(sf::RenderWindow &, const float);
 
 protected:
     bool mirrored_;
     sf::Transform transform_;
     sf::Color colour_;
 };
+
+Entity::Entity() : mirrored_(false)
+{
+}
+
+Entity::Entity(bool mirror) : mirrored_(mirror)
+{
+}
+
+void Entity::setTransformation(const sf::Transform transform)
+{
+    transform_ = transform;
+}
+
+void Entity::setColour(const sf::Color colour)
+{
+    colour_ = colour;
+}
+
+void Entity::setExpression(const int)
+{
+}
+
+void Entity::draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
+{
+}
 
 #endif // ENTITY_H

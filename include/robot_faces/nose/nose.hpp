@@ -20,25 +20,31 @@ class Nose : public ProxyEntity<NoseShape>
 {
 
 public:
-    Nose() : ProxyEntity(NoseShape::Squircle, NOSE_ENTITIES_) {}
+    Nose();
 
-    void setBackgroundColour(const sf::Color background_colour)
-    {
-        for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(NoseShape::Annulus)); range.first != range.second; ++range.first)
-        {
-            std::shared_ptr<AnnulusNose> annulus_cast = std::static_pointer_cast<AnnulusNose>(range.first->second);
-            annulus_cast->setBackgroundColour(background_colour);
-        }
-    }
+    void setBackgroundColour(const sf::Color);
 
-    void setSquircleRadius(const sf::Vector2f squircle_radius)
-    {
-        for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(NoseShape::Squircle)); range.first != range.second; ++range.first)
-        {
-            std::shared_ptr<SquircleEntity> squircle_cast = std::static_pointer_cast<SquircleEntity>(range.first->second);
-            squircle_cast->setSquircleRadius(squircle_radius);
-        }
-    }
+    void setSquircleRadius(const sf::Vector2f);
 };
+
+Nose::Nose() : ProxyEntity(NoseShape::Squircle, NOSE_ENTITIES_) {}
+
+void Nose::setBackgroundColour(const sf::Color background_colour)
+{
+    for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(NoseShape::Annulus)); range.first != range.second; ++range.first)
+    {
+        std::shared_ptr<AnnulusNose> annulus_cast = std::static_pointer_cast<AnnulusNose>(range.first->second);
+        annulus_cast->setBackgroundColour(background_colour);
+    }
+}
+
+void Nose::setSquircleRadius(const sf::Vector2f squircle_radius)
+{
+    for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(NoseShape::Squircle)); range.first != range.second; ++range.first)
+    {
+        std::shared_ptr<SquircleEntity> squircle_cast = std::static_pointer_cast<SquircleEntity>(range.first->second);
+        squircle_cast->setSquircleRadius(squircle_radius);
+    }
+}
 
 #endif // NOSE_HPP

@@ -59,127 +59,19 @@ class Face
 {
 
 public:
-    Face() : left_eyebrow_(EyebrowShape::Arc, EYEBROW_ENTITIES),
-             right_eyebrow_(EyebrowShape::Arc, EYEBROW_ENTITIES),
-             background_colour_(sf::Color(255, 255, 255, 255)),
-             saccade_time_dist_(MEAN_SACCADE_TIME, STDDEV_SACCADE_TIME),
-             saccade_pos_dist_(0.0f, STDDEV_SACCADE_POS),
-             do_saccades_(true)
-    {
-        DEBUG_ONCE = true;
-        DEBUG_TIMER = 0.0f;
+    Face();
 
-        std::random_device rd;
-        random_engine_.seed(rd());
+    void setSpeaking(const bool);
 
-        saccade_countdown_ = saccade_time_dist_(random_engine_);
-    }
+    void setGaze(const sf::Vector2f);
 
-    void setSpeaking(const bool speaking)
-    {
-        mouth_.setSpeaking(speaking);
-    }
-
-    void setGaze(const sf::Vector2f gaze_vector)
-    {
-        // std::cout << gaze_vector.x << " , " << gaze_vector.y << std::endl;
-
-        transform_tree_.gaze_offset_vec = sf::Vector2f(gaze_vector.x * MAX_GAZE_SIZE.x, gaze_vector.y * MAX_GAZE_SIZE.y);
-
-        sf::Transform temp_transform = transform_tree_.left_eye_transform_;
-        temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
-        left_iris_.setTransformation(temp_transform);
-
-        temp_transform = transform_tree_.right_eye_transform_;
-        temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
-        right_iris_.setTransformation(temp_transform);
-
-        temp_transform = transform_tree_.left_eye_transform_;
-        temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
-        left_pupil_.setTransformation(temp_transform);
-
-        temp_transform = transform_tree_.right_eye_transform_;
-        temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
-        right_pupil_.setTransformation(temp_transform);
-    }
-
-    void setExpression(const Expression expression) {
-        
-    }
+    void setExpression(const Expression);
 
     void setPreset();
 
-    void configure(const FaceConfiguration &face_config);
+    void configure(const FaceConfiguration &);
 
-    void draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
-    {
-        if (do_saccades_)
-        {
-            if (saccade_countdown_ <= 0)
-            {
-
-                transform_tree_.saccade_offset_vec = sf::Vector2f(saccade_pos_dist_(random_engine_), saccade_pos_dist_(random_engine_));
-
-                sf::Transform temp_transform = transform_tree_.left_eye_transform_;
-                temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
-                left_iris_.setTransformation(temp_transform);
-
-                temp_transform = transform_tree_.right_eye_transform_;
-                temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
-                right_iris_.setTransformation(temp_transform.combine(g_mirror_transform));
-
-                temp_transform = transform_tree_.left_eye_transform_;
-                temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
-                left_pupil_.setTransformation(temp_transform);
-
-                temp_transform = transform_tree_.right_eye_transform_;
-                temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
-                right_pupil_.setTransformation(temp_transform);
-
-                saccade_countdown_ = saccade_time_dist_(random_engine_);
-            }
-            else
-            {
-                saccade_countdown_ -= frame_delta_time;
-            }
-        }
-
-        DEBUG_TIMER += frame_delta_time;
-        if (DEBUG_TIMER > 8000 && DEBUG_ONCE)
-        {
-            DEBUG_ONCE = false;
-            std::cout << "move mouth" << std::endl;
-
-            // sf::Transform face_center_transform(1.0f, 0.0f, 800 * 0.75f,
-            //                                     0.0f, 1.0f, 600 * 0.5f,
-            //                                     0.0f, 0.0f, 1.f);
-            // mouth_.setTransformation(face_center_transform);
-            sf::Transform temp_transform = transform_tree_.left_eyebrow_transform_;
-            temp_transform.translate(sf::Vector2f(30.0f, 30.0f));
-            left_eyebrow_.setTransformation(temp_transform);
-
-            temp_transform = transform_tree_.right_eyebrow_transform_;
-            temp_transform.translate(sf::Vector2f(30.0f, 30.0f));
-            right_eyebrow_.setTransformation(temp_transform.combine(g_mirror_transform));
-        }
-
-        renderWindow.clear(background_colour_);
-
-        left_iris_.draw(renderWindow, frame_delta_time);
-        right_iris_.draw(renderWindow, frame_delta_time);
-
-        left_pupil_.draw(renderWindow, frame_delta_time);
-        right_pupil_.draw(renderWindow, frame_delta_time);
-
-        left_eyebrow_.draw(renderWindow, frame_delta_time);
-        right_eyebrow_.draw(renderWindow, frame_delta_time);
-
-        mouth_.draw(renderWindow, frame_delta_time);
-
-        nose_.draw(renderWindow, frame_delta_time);
-
-        transform_tree_.draw(renderWindow, frame_delta_time);
-    }
+    void draw(sf::RenderWindow &, const float);
 
 private:
     ProxyEntity<EyebrowShape> left_eyebrow_;
@@ -204,6 +96,54 @@ private:
     bool DEBUG_ONCE;
     float DEBUG_TIMER;
 };
+
+Face::Face() : left_eyebrow_(EyebrowShape::Arc, EYEBROW_ENTITIES),
+               right_eyebrow_(EyebrowShape::Arc, EYEBROW_ENTITIES),
+               background_colour_(sf::Color(255, 255, 255, 255)),
+               saccade_time_dist_(MEAN_SACCADE_TIME, STDDEV_SACCADE_TIME),
+               saccade_pos_dist_(0.0f, STDDEV_SACCADE_POS),
+               do_saccades_(true)
+{
+    DEBUG_ONCE = true;
+    DEBUG_TIMER = 0.0f;
+
+    std::random_device rd;
+    random_engine_.seed(rd());
+
+    saccade_countdown_ = saccade_time_dist_(random_engine_);
+}
+
+void Face::setSpeaking(const bool speaking)
+{
+    mouth_.setSpeaking(speaking);
+}
+
+void Face::setGaze(const sf::Vector2f gaze_vector)
+{
+    // std::cout << gaze_vector.x << " , " << gaze_vector.y << std::endl;
+
+    transform_tree_.gaze_offset_vec = sf::Vector2f(gaze_vector.x * MAX_GAZE_SIZE.x, gaze_vector.y * MAX_GAZE_SIZE.y);
+
+    sf::Transform temp_transform = transform_tree_.left_eye_transform_;
+    temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
+    left_iris_.setTransformation(temp_transform);
+
+    temp_transform = transform_tree_.right_eye_transform_;
+    temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
+    right_iris_.setTransformation(temp_transform);
+
+    temp_transform = transform_tree_.left_eye_transform_;
+    temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
+    left_pupil_.setTransformation(temp_transform);
+
+    temp_transform = transform_tree_.right_eye_transform_;
+    temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
+    right_pupil_.setTransformation(temp_transform);
+}
+
+void Face::setExpression(const Expression expression)
+{
+}
 
 void Face::configure(const FaceConfiguration &face_config)
 {
@@ -317,6 +257,76 @@ void Face::configure(const FaceConfiguration &face_config)
     mouth_.setColour(face_config.mouth_colour);
     mouth_.setSquircleRadius(face_config.mouth_squircle_radius);
     mouth_.show(face_config.show_mouth);
+}
+
+void Face::draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
+{
+    if (do_saccades_)
+    {
+        if (saccade_countdown_ <= 0)
+        {
+
+            transform_tree_.saccade_offset_vec = sf::Vector2f(saccade_pos_dist_(random_engine_), saccade_pos_dist_(random_engine_));
+
+            sf::Transform temp_transform = transform_tree_.left_eye_transform_;
+            temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
+            left_iris_.setTransformation(temp_transform);
+
+            temp_transform = transform_tree_.right_eye_transform_;
+            temp_transform.translate(transform_tree_.gaze_offset_vec * PUPIL_IRIS_DELTA).translate(transform_tree_.saccade_offset_vec * PUPIL_IRIS_DELTA);
+            right_iris_.setTransformation(temp_transform.combine(g_mirror_transform));
+
+            temp_transform = transform_tree_.left_eye_transform_;
+            temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
+            left_pupil_.setTransformation(temp_transform);
+
+            temp_transform = transform_tree_.right_eye_transform_;
+            temp_transform.translate(transform_tree_.gaze_offset_vec).translate(transform_tree_.saccade_offset_vec);
+            right_pupil_.setTransformation(temp_transform);
+
+            saccade_countdown_ = saccade_time_dist_(random_engine_);
+        }
+        else
+        {
+            saccade_countdown_ -= frame_delta_time;
+        }
+    }
+
+    DEBUG_TIMER += frame_delta_time;
+    if (DEBUG_TIMER > 8000 && DEBUG_ONCE)
+    {
+        DEBUG_ONCE = false;
+        std::cout << "move mouth" << std::endl;
+
+        // sf::Transform face_center_transform(1.0f, 0.0f, 800 * 0.75f,
+        //                                     0.0f, 1.0f, 600 * 0.5f,
+        //                                     0.0f, 0.0f, 1.f);
+        // mouth_.setTransformation(face_center_transform);
+        sf::Transform temp_transform = transform_tree_.left_eyebrow_transform_;
+        temp_transform.translate(sf::Vector2f(30.0f, 30.0f));
+        left_eyebrow_.setTransformation(temp_transform);
+
+        temp_transform = transform_tree_.right_eyebrow_transform_;
+        temp_transform.translate(sf::Vector2f(30.0f, 30.0f));
+        right_eyebrow_.setTransformation(temp_transform.combine(g_mirror_transform));
+    }
+
+    renderWindow.clear(background_colour_);
+
+    left_iris_.draw(renderWindow, frame_delta_time);
+    right_iris_.draw(renderWindow, frame_delta_time);
+
+    left_pupil_.draw(renderWindow, frame_delta_time);
+    right_pupil_.draw(renderWindow, frame_delta_time);
+
+    left_eyebrow_.draw(renderWindow, frame_delta_time);
+    right_eyebrow_.draw(renderWindow, frame_delta_time);
+
+    mouth_.draw(renderWindow, frame_delta_time);
+
+    nose_.draw(renderWindow, frame_delta_time);
+
+    transform_tree_.draw(renderWindow, frame_delta_time);
 }
 
 #endif // FACE_H

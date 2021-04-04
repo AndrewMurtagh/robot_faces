@@ -14,22 +14,24 @@ const std::multimap<IrisShape, std::shared_ptr<Entity>> IRIS_ENTITIES_{
     {IrisShape::Arc, std::make_shared<VertexEntity>("/res/iris/arc.txt")},
     {IrisShape::Squircle, std::make_shared<SquircleEntity>(IRIS_SIZE, SQUIRCLE_IRIS_RADIUS)}};
 
-
 class Iris : public ProxyEntity<IrisShape>
 {
 
 public:
-    Iris() : ProxyEntity(IrisShape::Squircle, IRIS_ENTITIES_) {}
+    Iris();
 
-    void setSquircleRadius(const sf::Vector2f squircle_radius)
-    {
-        for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(IrisShape::Squircle)); range.first != range.second; ++range.first)
-        {
-            std::shared_ptr<SquircleEntity> squircle_cast = std::static_pointer_cast<SquircleEntity>(range.first->second);
-            squircle_cast->setSquircleRadius(squircle_radius);
-        }
-    }
-
+    void setSquircleRadius(const sf::Vector2f squircle_radius);
 };
+
+Iris::Iris() : ProxyEntity(IrisShape::Squircle, IRIS_ENTITIES_) {}
+
+void Iris::setSquircleRadius(const sf::Vector2f squircle_radius)
+{
+    for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(IrisShape::Squircle)); range.first != range.second; ++range.first)
+    {
+        std::shared_ptr<SquircleEntity> squircle_cast = std::static_pointer_cast<SquircleEntity>(range.first->second);
+        squircle_cast->setSquircleRadius(squircle_radius);
+    }
+}
 
 #endif // IRIS_HPP
