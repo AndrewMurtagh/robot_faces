@@ -35,7 +35,7 @@ public:
 
     void setColour(const sf::Color colour) override;
 
-    void setExpression(const int TEMP_EXPRESSION) override;
+    void setExpression(const Expression expression) override;
 
     void draw(sf::RenderWindow &renderWindow, const float frame_delta_time) override;
 };
@@ -78,11 +78,11 @@ void ProxyEntity<T>::setColour(const sf::Color colour)
 }
 
 template<typename T>
-void ProxyEntity<T>::setExpression(const int TEMP_EXPRESSION)
+void ProxyEntity<T>::setExpression(const Expression expression)
 {
     for (EntityMapPair entity : entity_map_)
     {
-        entity.second->setExpression(TEMP_EXPRESSION);
+        entity.second->setExpression(expression);
     }
 }
 

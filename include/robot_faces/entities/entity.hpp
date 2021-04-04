@@ -7,6 +7,7 @@
 
 #include <robot_faces/entities/ientity.hpp>
 #include <robot_faces/utils.hpp>
+#include <robot_faces/consts.hpp>
 
 class Entity : public IEntity
 {
@@ -19,7 +20,7 @@ public:
 
     void setColour(const sf::Color) override;
 
-    void setExpression(const int) override;
+    void setExpression(const Expression) override;
 
     void draw(sf::RenderWindow &, const float);
 
@@ -47,7 +48,7 @@ void Entity::setColour(const sf::Color colour)
     colour_ = colour;
 }
 
-void Entity::setExpression(const int)
+void Entity::setExpression(const Expression)
 {
 }
 
