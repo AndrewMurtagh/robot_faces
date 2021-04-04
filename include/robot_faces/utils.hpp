@@ -4,6 +4,7 @@
 #include <regex>
 #include <SFML/Graphics.hpp>
 #include <robot_faces/consts.hpp>
+#include <robot_faces/shapes/bezierline.hpp>
 
 // clamp is available in C++17
 template <typename T>
@@ -12,12 +13,13 @@ T clamp(const T &n, const T &lower, const T &upper)
     return std::max(lower, std::min(n, upper));
 }
 
-inline void printTransform(const sf::Transform& transform) {
-    const float* matrix = transform.getMatrix();
-    std::cout << matrix[0] << ", " << matrix[4] << ", " << matrix[8] << ", " << matrix[12] << std::endl << 
-                matrix[1] << ", " << matrix[5] << ", " << matrix[9] << ", " << matrix[13] <<  std::endl << 
-                matrix[2] << ", " << matrix[6] << ", " << matrix[10] << ", " << matrix[14] <<  std::endl << 
-                matrix[3] << ", " << matrix[7] << ", " << matrix[11] << ", " << matrix[15] << std::endl;
+inline void printTransform(const sf::Transform &transform)
+{
+    const float *matrix = transform.getMatrix();
+    std::cout << matrix[0] << ", " << matrix[4] << ", " << matrix[8] << ", " << matrix[12] << std::endl
+              << matrix[1] << ", " << matrix[5] << ", " << matrix[9] << ", " << matrix[13] << std::endl
+              << matrix[2] << ", " << matrix[6] << ", " << matrix[10] << ", " << matrix[14] << std::endl
+              << matrix[3] << ", " << matrix[7] << ", " << matrix[11] << ", " << matrix[15] << std::endl;
 }
 
 sf::Color validateColour(const std::string &c)
@@ -60,19 +62,91 @@ inline float degToRad(const float deg)
 {
     return deg * M_PI / 180.0f;
 }
+
 inline float getMagnitude(const sf::Vector2f v)
 {
     return (float)sqrt(v.x * v.x + v.y * v.y);
 }
+
 inline sf::Vector2f normalize(const sf::Vector2f v)
 {
     float mag = getMagnitude(v);
     return mag != 0 ? v / mag : sf::Vector2f(0, 0);
 }
 
-// inline float getDistance(const sf::Vector2f one, const sf::Vector2f two) {
-//  return sqrt(pow(two.x - one.x, 2) + pow(two.y - one.y, 2));
-// }
+
+void readBezierPointsFromFile(BezierLine &upper_points, BezierLine &lower_points, std::string file_path)
+{
+    std::string package_path = ros::package::getPath("robot_faces");
+
+    std::ifstream file(package_path + file_path, std::ifstream::in);
+
+    if (file.fail())
+    {
+        ROS_ERROR("Could not open file");
+    }
+
+    std::string line, x, y;
+    std::stringstream line_stream;
+
+    // upper start
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    upper_points.start = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // upper start control
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    upper_points.start_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // upper end control
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    upper_points.end_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // upper end
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    upper_points.end = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // lower start control
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    lower_points.start = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // lower start control
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    lower_points.start_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // lower end control
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    lower_points.end_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // lower end
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    lower_points.end = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    file.close();
+}
 
 void readVerticesFromFile(sf::VertexArray &vertex_array, std::string file_path, sf::Color colour)
 {
@@ -83,20 +157,22 @@ void readVerticesFromFile(sf::VertexArray &vertex_array, std::string file_path, 
     std::string package_path = ros::package::getPath("robot_faces");
 
     std::ifstream file(package_path + file_path, std::ifstream::in);
-    std::string line, x, y;
-    if (!getline(file, line))
+
+    if (file.fail())
     {
         ROS_ERROR("Could not open file");
     }
-    std::stringstream liness(line);
+
+    std::string line, x, y;
+    std::stringstream line_stream(line);
 
     vertex_array.append(sf::Vertex(sf::Vector2f(initial_position.x, initial_position.y), colour));
 
     while (getline(file, line))
     {
-        std::stringstream liness(line);
-        getline(liness, x, ',');
-        getline(liness, y);
+        std::stringstream line_stream(line);
+        getline(line_stream, x, ',');
+        getline(line_stream, y);
 
         float x_point = strtof(x.c_str(), 0);
         float y_point = strtof(y.c_str(), 0);

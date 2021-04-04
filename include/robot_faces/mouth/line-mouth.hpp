@@ -23,6 +23,7 @@ public:
 private:
     BezierLine upper_mouth_bezier_control_points_;
     BezierLine lower_mouth_bezier_control_points_;
+
     std::vector<sf::Vector2f> upper_bezier_line_points_;
     std::vector<sf::Vector2f> lower_bezier_line_points_;
     sf::CircleShape mouth_fillet_;
@@ -42,17 +43,7 @@ LineMouth::LineMouth() : is_speaking_(false),
                          elongation_dist_(0.0, 1.0)
 {
 
-    upper_mouth_bezier_control_points_ = {
-        .start = sf::Vector2f(-0.5f * MOUTH_SIZE.x, 0.0f * MOUTH_SIZE.y),
-        .end = sf::Vector2f(0.5f * MOUTH_SIZE.x, 0.0f * MOUTH_SIZE.y),
-        .start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, curr_elongation_scale_ * MOUTH_SIZE.y),
-        .end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, curr_elongation_scale_ * MOUTH_SIZE.y)};
-
-    lower_mouth_bezier_control_points_ = {
-        .start = sf::Vector2f(-0.5f * MOUTH_SIZE.x, 0.0f * MOUTH_SIZE.y),
-        .end = sf::Vector2f(0.5f * MOUTH_SIZE.x, 0.0f * MOUTH_SIZE.y),
-        .start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, -1.0f * curr_elongation_scale_ * MOUTH_SIZE.y),
-        .end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, -1.0f * curr_elongation_scale_ * MOUTH_SIZE.y)};
+    readBezierPointsFromFile(upper_mouth_bezier_control_points_, lower_mouth_bezier_control_points_, "/res/mouth/neutral.txt");
 
     mouth_fillet_.setRadius(LINE_MOUTH_THICKNESS / 2.0f);
     mouth_fillet_.setFillColor(colour_);

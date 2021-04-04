@@ -101,8 +101,6 @@ azimuth: 1.0"
 
 - [ ] Reverse direction of eyebrow spacing.
 
-- [ ] Change from services to topics.
-
 - [ ] Expressions.
 
 - [ ] Handle window size changing and resize entities.
@@ -130,6 +128,8 @@ azimuth: 1.0"
 - [x] Make squircle mouth inherit from squircle entity.
 
 ## Notes
+
+- Should we use services or topics?
 
 - Should we make a Mouth entity that deals with speaking behaviour instead of duplicating code in LineMouth and SquircleMouth?
 
