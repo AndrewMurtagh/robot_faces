@@ -2,14 +2,16 @@
 #define BEZIER_LINE_HPP
 
 #include <SFML/Graphics.hpp>
+#include <robot_faces/consts.hpp>
+#include <robot_faces/utils.hpp>
 
-const int NUM_SEGMENTS = 20;
 class BezierLine
 {
 public:
     sf::Vector2f start, end, start_control, end_control;
 
     std::vector<sf::Vector2f> generateCurve() const;
+    bool closeEnough(const BezierLine &other_point, const float threshold) const;
 };
 
 std::vector<sf::Vector2f> BezierLine::generateCurve() const
@@ -27,5 +29,98 @@ std::vector<sf::Vector2f> BezierLine::generateCurve() const
 
     return result;
 }
+
+bool BezierLine::closeEnough(const BezierLine &other_point, const float threshold) const
+{
+
+    if (getDistance(start, other_point.start) <= threshold &&
+        getDistance(end, other_point.end) <= threshold &&
+        getDistance(start_control, other_point.start_control) <= threshold &&
+        getDistance(end_control, other_point.end_control) <= threshold)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+
+void readBezierPointsFromFile(BezierLine &upper_points, BezierLine &lower_points, std::string file_path)
+{
+    std::string package_path = ros::package::getPath("robot_faces");
+
+    std::ifstream file(package_path + file_path, std::ifstream::in);
+
+    if (file.fail())
+    {
+        ROS_ERROR("Could not open file");
+    }
+
+    std::string line, x, y;
+    std::stringstream line_stream;
+
+    // upper start
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    upper_points.start = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // upper start control
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    upper_points.start_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // upper end control
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    upper_points.end_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // upper end
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    upper_points.end = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // lower start control
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    lower_points.start = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // lower start control
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    lower_points.start_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // lower end control
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    lower_points.end_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    // lower end
+    getline(file, line);
+    line_stream = std::stringstream(line);
+    getline(line_stream, x, ',');
+    getline(line_stream, y);
+    lower_points.end = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
+
+    file.close();
+}
+
+
 
 #endif // BEZIER_LINE_HPP

@@ -96,17 +96,17 @@ void ProxyEntity<T>::draw(sf::RenderWindow &renderWindow, const float frame_delt
     const float *target_trans_matrix = target_transformation_.getMatrix();
 
     sf::Transform new_curr_transformation(
-        curr_trans_matrix[0] + frame_delta_time * 0.01f * (target_trans_matrix[0] - curr_trans_matrix[0]),
-        curr_trans_matrix[4] + frame_delta_time * 0.01f * (target_trans_matrix[4] - curr_trans_matrix[1]),
-        curr_trans_matrix[12] + frame_delta_time * 0.01f * (target_trans_matrix[12] - curr_trans_matrix[12]),
+        curr_trans_matrix[0] + frame_delta_time * SPEED * (target_trans_matrix[0] - curr_trans_matrix[0]),  
+        curr_trans_matrix[4] + frame_delta_time * SPEED * (target_trans_matrix[4] - curr_trans_matrix[1]),
+        curr_trans_matrix[12] + frame_delta_time * SPEED * (target_trans_matrix[12] - curr_trans_matrix[12]),
 
-        curr_trans_matrix[1] + frame_delta_time * 0.01f * (target_trans_matrix[1] - curr_trans_matrix[1]),
-        curr_trans_matrix[5] + frame_delta_time * 0.01f * (target_trans_matrix[5] - curr_trans_matrix[5]),
-        curr_trans_matrix[13] + frame_delta_time * 0.01f * (target_trans_matrix[13] - curr_trans_matrix[13]),
+        curr_trans_matrix[1] + frame_delta_time * SPEED * (target_trans_matrix[1] - curr_trans_matrix[1]),
+        curr_trans_matrix[5] + frame_delta_time * SPEED * (target_trans_matrix[5] - curr_trans_matrix[5]),
+        curr_trans_matrix[13] + frame_delta_time * SPEED * (target_trans_matrix[13] - curr_trans_matrix[13]),
 
-        curr_trans_matrix[3] + frame_delta_time * 0.01f * (target_trans_matrix[3] - curr_trans_matrix[3]),
-        curr_trans_matrix[7] + frame_delta_time * 0.01f * (target_trans_matrix[7] - curr_trans_matrix[7]),
-        curr_trans_matrix[15] + frame_delta_time * 0.01f * (target_trans_matrix[15] - curr_trans_matrix[15]));
+        curr_trans_matrix[3] + frame_delta_time * SPEED * (target_trans_matrix[3] - curr_trans_matrix[3]),
+        curr_trans_matrix[7] + frame_delta_time * SPEED * (target_trans_matrix[7] - curr_trans_matrix[7]),
+        curr_trans_matrix[15] + frame_delta_time * SPEED * (target_trans_matrix[15] - curr_trans_matrix[15]));
 
     curr_transformation_ = new_curr_transformation;
 

@@ -26,38 +26,38 @@ public:
 
         default:
         case Expression::Neutral:
-            curr_upper_points = neutral_upper_points;
-            curr_lower_points = neutral_lower_points;
+            target_upper_points = neutral_upper_points;
+            target_lower_points = neutral_lower_points;
         
         break;
 
         case Expression::Sad:
-            curr_upper_points = sad_upper_points;
-            curr_lower_points = sad_lower_points;
+            target_upper_points = sad_upper_points;
+            target_lower_points = sad_lower_points;
         
         break;
 
         case Expression::Scared:
-            curr_upper_points = scared_upper_points;
-            curr_lower_points = scared_lower_points;
+            target_upper_points = scared_upper_points;
+            target_lower_points = scared_lower_points;
         
         break;
 
         case Expression::Angry:
-            curr_upper_points = angry_upper_points;
-            curr_lower_points = angry_lower_points;
+            target_upper_points = angry_upper_points;
+            target_lower_points = angry_lower_points;
         
         break;
 
         case Expression::Happy:
-            curr_upper_points = happy_upper_points;
-            curr_lower_points = happy_lower_points;
+            target_upper_points = happy_upper_points;
+            target_lower_points = happy_lower_points;
         
         break;
 
         case Expression::Shocked:
-            curr_upper_points = shocked_upper_points;
-            curr_lower_points = shocked_lower_points;
+            target_upper_points = shocked_upper_points;
+            target_lower_points = shocked_lower_points;
         break;
         }
     }
@@ -86,6 +86,9 @@ private:
     BezierLine curr_upper_points;
     BezierLine curr_lower_points;
 
+    BezierLine target_upper_points;
+    BezierLine target_lower_points;
+
     std::vector<sf::Vector2f> upper_bezier_line_points_;
     std::vector<sf::Vector2f> lower_bezier_line_points_;
     sf::CircleShape mouth_fillet_;
@@ -112,8 +115,11 @@ LineMouth::LineMouth() : is_speaking_(false),
     readBezierPointsFromFile(happy_upper_points, happy_lower_points, "/res/mouth/happy.txt");
     readBezierPointsFromFile(shocked_upper_points, shocked_lower_points, "/res/mouth/shocked.txt");
 
-    curr_upper_points = neutral_upper_points;
-    curr_lower_points = neutral_lower_points;
+    target_upper_points = neutral_upper_points;
+    target_lower_points = neutral_lower_points;
+
+    curr_upper_points = target_upper_points;
+    curr_lower_points = target_lower_points;
 
     mouth_fillet_.setRadius(LINE_MOUTH_THICKNESS / 2.0f);
     mouth_fillet_.setFillColor(colour_);
@@ -164,6 +170,18 @@ void LineMouth::draw(sf::RenderWindow &renderWindow, const float frame_delta_tim
     //     lower_mouth_bezier_control_points_.start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, -1.0f * curr_elongation_scale_ * MOUTH_SIZE.y);
     //     lower_mouth_bezier_control_points_.end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, -1.0f * curr_elongation_scale_ * MOUTH_SIZE.y);
     // }
+
+    // move curr towards to target
+    curr_upper_points.start = curr_upper_points.start + frame_delta_time * SPEED * (target_upper_points.start - curr_upper_points.start);  
+    curr_upper_points.start_control = curr_upper_points.start_control + frame_delta_time * SPEED * (target_upper_points.start_control - curr_upper_points.start_control);  
+    curr_upper_points.end_control = curr_upper_points.end_control + frame_delta_time * SPEED * (target_upper_points.end_control - curr_upper_points.end_control);  
+    curr_upper_points.end = curr_upper_points.end + frame_delta_time * SPEED * (target_upper_points.end - curr_upper_points.end);  
+
+    curr_lower_points.start = curr_lower_points.start + frame_delta_time * SPEED * (target_lower_points.start - curr_lower_points.start);  
+    curr_lower_points.start_control = curr_lower_points.start_control + frame_delta_time * SPEED * (target_lower_points.start_control - curr_lower_points.start_control);  
+    curr_lower_points.end_control = curr_lower_points.end_control + frame_delta_time * SPEED * (target_lower_points.end_control - curr_lower_points.end_control);  
+    curr_lower_points.end = curr_lower_points.end + frame_delta_time * SPEED * (target_lower_points.end - curr_lower_points.end);  
+
     upper_bezier_line_points_ = curr_upper_points.generateCurve();
     lower_bezier_line_points_ = curr_lower_points.generateCurve();
 

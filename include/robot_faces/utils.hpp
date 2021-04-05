@@ -4,7 +4,6 @@
 #include <regex>
 #include <SFML/Graphics.hpp>
 #include <robot_faces/consts.hpp>
-#include <robot_faces/shapes/bezierline.hpp>
 
 // clamp is available in C++17
 template <typename T>
@@ -74,78 +73,9 @@ inline sf::Vector2f normalize(const sf::Vector2f v)
     return mag != 0 ? v / mag : sf::Vector2f(0, 0);
 }
 
-
-void readBezierPointsFromFile(BezierLine &upper_points, BezierLine &lower_points, std::string file_path)
+inline float getDistance(const sf::Vector2f one, const sf::Vector2f two)
 {
-    std::string package_path = ros::package::getPath("robot_faces");
-
-    std::ifstream file(package_path + file_path, std::ifstream::in);
-
-    if (file.fail())
-    {
-        ROS_ERROR("Could not open file");
-    }
-
-    std::string line, x, y;
-    std::stringstream line_stream;
-
-    // upper start
-    getline(file, line);
-    line_stream = std::stringstream(line);
-    getline(line_stream, x, ',');
-    getline(line_stream, y);
-    upper_points.start = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
-
-    // upper start control
-    getline(file, line);
-    line_stream = std::stringstream(line);
-    getline(line_stream, x, ',');
-    getline(line_stream, y);
-    upper_points.start_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
-
-    // upper end control
-    getline(file, line);
-    line_stream = std::stringstream(line);
-    getline(line_stream, x, ',');
-    getline(line_stream, y);
-    upper_points.end_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
-
-    // upper end
-    getline(file, line);
-    line_stream = std::stringstream(line);
-    getline(line_stream, x, ',');
-    getline(line_stream, y);
-    upper_points.end = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
-
-    // lower start control
-    getline(file, line);
-    line_stream = std::stringstream(line);
-    getline(line_stream, x, ',');
-    getline(line_stream, y);
-    lower_points.start = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
-
-    // lower start control
-    getline(file, line);
-    line_stream = std::stringstream(line);
-    getline(line_stream, x, ',');
-    getline(line_stream, y);
-    lower_points.start_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
-
-    // lower end control
-    getline(file, line);
-    line_stream = std::stringstream(line);
-    getline(line_stream, x, ',');
-    getline(line_stream, y);
-    lower_points.end_control = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
-
-    // lower end
-    getline(file, line);
-    line_stream = std::stringstream(line);
-    getline(line_stream, x, ',');
-    getline(line_stream, y);
-    lower_points.end = sf::Vector2f(strtof(x.c_str(), 0) * MOUTH_SIZE.x, strtof(y.c_str(), 0) * MOUTH_SIZE.y);
-
-    file.close();
+    return sqrt(pow(two.x - one.x, 2) + pow(two.y - one.y, 2));
 }
 
 void readVerticesFromFile(sf::VertexArray &vertex_array, std::string file_path, sf::Color colour)
