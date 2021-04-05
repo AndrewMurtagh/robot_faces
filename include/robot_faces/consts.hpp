@@ -41,7 +41,8 @@ enum class NoseShape
 enum class MouthShape
 {
     Squircle,
-    Line
+    Line,
+    Fill
 };
 
 

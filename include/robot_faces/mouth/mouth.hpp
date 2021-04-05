@@ -7,10 +7,12 @@
 #include <robot_faces/consts.hpp>
 #include <robot_faces/mouth/line-mouth.hpp>
 #include <robot_faces/mouth/squircle-mouth.hpp>
+#include <robot_faces/mouth/fill-mouth.hpp>
 
 const std::multimap<MouthShape, std::shared_ptr<Entity>> MOUTH_ENTITIES_{
     {MouthShape::Squircle, std::make_shared<SquircleMouth>()},
-    {MouthShape::Line, std::make_shared<LineMouth>()}};
+    {MouthShape::Line, std::make_shared<LineMouth>()},
+    {MouthShape::Fill, std::make_shared<FillMouth>()}};
 
 class Mouth : public ProxyEntity<MouthShape>
 {
@@ -24,21 +26,42 @@ public:
 
     void setExpression(const Expression expression) override
     {
-        std::cout << "Mouth::setExpression" << std::endl;
-        // set squircle transform here
-        // call line mouth expression
-        for (std::pair<EntityMapItr, EntityMapItr> range(entity_map_.equal_range(MouthShape::Line)); range.first != range.second; ++range.first)
+        // std::cout << "Mouth::setExpression" << std::endl;
+        // TODO: FIND A BETTER WAY TO DO THIS
+        for (EntityMapPair entity : entity_map_)
         {
-            std::shared_ptr<LineMouth> line_cast = std::static_pointer_cast<LineMouth>(range.first->second);
-            line_cast->setExpression(expression);
+            switch (entity.first)
+            {
+
+            // case MouthShape::Squircle:
+            // {
+            //     std::shared_ptr<SquircleMouth> squircle_cast = std::static_pointer_cast<SquircleMouth>(entity.second);
+            //     squircle_cast->setSpeaking(speaking);
+            //     break;
+            // }
+
+            case MouthShape::Line:
+            {
+                std::shared_ptr<LineMouth> line_cast = std::static_pointer_cast<LineMouth>(entity.second);
+                line_cast->setExpression(expression);
+                break;
+            }
+            case MouthShape::Fill:
+            {
+                std::shared_ptr<FillMouth> fill_cast = std::static_pointer_cast<FillMouth>(entity.second);
+                fill_cast->setExpression(expression);
+                break;
+            }
+            }
         }
     }
 };
 
-Mouth::Mouth() : ProxyEntity(MouthShape::Line, MOUTH_ENTITIES_) {}
+Mouth::Mouth() : ProxyEntity(MouthShape::Fill, MOUTH_ENTITIES_) {}
 
 void Mouth::setSpeaking(const bool speaking)
 {
+    // TODO: FIND A BETTER WAY TO DO THIS
     for (EntityMapPair entity : entity_map_)
     {
         switch (entity.first)
@@ -55,6 +78,12 @@ void Mouth::setSpeaking(const bool speaking)
         {
             std::shared_ptr<LineMouth> line_cast = std::static_pointer_cast<LineMouth>(entity.second);
             line_cast->setSpeaking(speaking);
+            break;
+        }
+        case MouthShape::Fill:
+        {
+            std::shared_ptr<FillMouth> fill_cast = std::static_pointer_cast<FillMouth>(entity.second);
+            fill_cast->setSpeaking(speaking);
             break;
         }
         }

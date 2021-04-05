@@ -18,52 +18,12 @@ public:
 
     void setColour(const sf::Color) override;
 
-    void setExpression(const Expression expression) override
-    {
-        switch (expression)
-        {
-
-        default:
-        case Expression::Neutral:
-            target_upper_points = neutral_upper_points;
-            target_lower_points = neutral_lower_points;
-
-            break;
-
-        case Expression::Sad:
-            target_upper_points = sad_upper_points;
-            target_lower_points = sad_lower_points;
-
-            break;
-
-        case Expression::Scared:
-            target_upper_points = scared_upper_points;
-            target_lower_points = scared_lower_points;
-
-            break;
-
-        case Expression::Angry:
-            target_upper_points = angry_upper_points;
-            target_lower_points = angry_lower_points;
-
-            break;
-
-        case Expression::Happy:
-            target_upper_points = happy_upper_points;
-            target_lower_points = happy_lower_points;
-
-            break;
-
-        case Expression::Shocked:
-            target_upper_points = shocked_upper_points;
-            target_lower_points = shocked_lower_points;
-            break;
-        }
-    }
+    void setExpression(const Expression expression) override;
 
     void draw(sf::RenderWindow &, const float) override;
 
-private:
+    // the fill mouth can be implemented by inheriting the line mouth so we make these protected
+protected:
     BezierLine neutral_upper_points;
     BezierLine neutral_lower_points;
 
@@ -134,9 +94,6 @@ void LineMouth::setSpeaking(const bool speaking)
     is_speaking_ = speaking;
     if (speaking)
     {
-        prev_upper_points = target_upper_points;
-        prev_lower_points = target_lower_points;
-
         target_upper_points = neutral_upper_points;
         target_lower_points = neutral_lower_points;
     }
@@ -151,6 +108,52 @@ void LineMouth::setColour(const sf::Color colour)
 {
     Entity::setColour(colour);
     mouth_fillet_.setFillColor(colour);
+}
+
+void LineMouth::setExpression(const Expression expression)
+{
+    switch (expression)
+    {
+
+    default:
+    case Expression::Neutral:
+        target_upper_points = neutral_upper_points;
+        target_lower_points = neutral_lower_points;
+
+        break;
+
+    case Expression::Sad:
+        target_upper_points = sad_upper_points;
+        target_lower_points = sad_lower_points;
+
+        break;
+
+    case Expression::Scared:
+        target_upper_points = scared_upper_points;
+        target_lower_points = scared_lower_points;
+
+        break;
+
+    case Expression::Angry:
+        target_upper_points = angry_upper_points;
+        target_lower_points = angry_lower_points;
+
+        break;
+
+    case Expression::Happy:
+        target_upper_points = happy_upper_points;
+        target_lower_points = happy_lower_points;
+
+        break;
+
+    case Expression::Shocked:
+        target_upper_points = shocked_upper_points;
+        target_lower_points = shocked_lower_points;
+        break;
+    }
+
+    prev_upper_points = target_upper_points;
+    prev_lower_points = target_lower_points;
 }
 
 void LineMouth::draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
