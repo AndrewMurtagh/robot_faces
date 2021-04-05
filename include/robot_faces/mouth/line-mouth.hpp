@@ -20,7 +20,6 @@ public:
 
     void setExpression(const Expression expression) override
     {
-        std::cout << "LineMouth::setExpression" << std::endl;
         switch (expression)
         {
 
@@ -28,37 +27,37 @@ public:
         case Expression::Neutral:
             target_upper_points = neutral_upper_points;
             target_lower_points = neutral_lower_points;
-        
-        break;
+
+            break;
 
         case Expression::Sad:
             target_upper_points = sad_upper_points;
             target_lower_points = sad_lower_points;
-        
-        break;
+
+            break;
 
         case Expression::Scared:
             target_upper_points = scared_upper_points;
             target_lower_points = scared_lower_points;
-        
-        break;
+
+            break;
 
         case Expression::Angry:
             target_upper_points = angry_upper_points;
             target_lower_points = angry_lower_points;
-        
-        break;
+
+            break;
 
         case Expression::Happy:
             target_upper_points = happy_upper_points;
             target_lower_points = happy_lower_points;
-        
-        break;
+
+            break;
 
         case Expression::Shocked:
             target_upper_points = shocked_upper_points;
             target_lower_points = shocked_lower_points;
-        break;
+            break;
         }
     }
 
@@ -86,6 +85,9 @@ private:
     BezierLine curr_upper_points;
     BezierLine curr_lower_points;
 
+    BezierLine prev_upper_points;
+    BezierLine prev_lower_points;
+
     BezierLine target_upper_points;
     BezierLine target_lower_points;
 
@@ -95,16 +97,11 @@ private:
 
     bool is_speaking_;
 
-    float curr_elongation_scale_;
-    float target_elongation_scale_;
-
     std::mt19937 random_engine_;
     std::uniform_real_distribution<float> elongation_dist_;
 };
 
 LineMouth::LineMouth() : is_speaking_(false),
-                         curr_elongation_scale_(0.0),
-                         target_elongation_scale_(0.0),
                          elongation_dist_(0.0, 1.0)
 {
 
@@ -121,14 +118,15 @@ LineMouth::LineMouth() : is_speaking_(false),
     curr_upper_points = target_upper_points;
     curr_lower_points = target_lower_points;
 
+    prev_upper_points = target_upper_points;
+    prev_lower_points = target_lower_points;
+
     mouth_fillet_.setRadius(LINE_MOUTH_THICKNESS / 2.0f);
     mouth_fillet_.setFillColor(colour_);
     mouth_fillet_.setOrigin(LINE_MOUTH_THICKNESS / 2.0f, LINE_MOUTH_THICKNESS / 2.0f);
 
     std::random_device rd;
     random_engine_.seed(rd());
-
-    target_elongation_scale_ = elongation_dist_(random_engine_);
 }
 
 void LineMouth::setSpeaking(const bool speaking)
@@ -136,11 +134,16 @@ void LineMouth::setSpeaking(const bool speaking)
     is_speaking_ = speaking;
     if (speaking)
     {
-        target_elongation_scale_ = elongation_dist_(random_engine_);
+        prev_upper_points = target_upper_points;
+        prev_lower_points = target_lower_points;
+
+        target_upper_points = neutral_upper_points;
+        target_lower_points = neutral_lower_points;
     }
     else
     {
-        target_elongation_scale_ = 0.0f;
+        target_upper_points = prev_upper_points;
+        target_lower_points = prev_lower_points;
     }
 }
 
@@ -152,35 +155,35 @@ void LineMouth::setColour(const sf::Color colour)
 
 void LineMouth::draw(sf::RenderWindow &renderWindow, const float frame_delta_time)
 {
-    // if (is_speaking_)
-    // {
-    //     if (abs(target_elongation_scale_ - curr_elongation_scale_) < SPEAKING_ELON_CLOSE_ENOUGH)
-    //     {
-    //         curr_elongation_scale_ = target_elongation_scale_;
-    //         target_elongation_scale_ = elongation_dist_(random_engine_);
-    //     }
-    //     else
-    //     {
-    //         float delta = frame_delta_time * SPEAKING_SPEED * (target_elongation_scale_ - curr_elongation_scale_);
-    //         curr_elongation_scale_ += delta;
-    //     }
-
-    //     upper_mouth_bezier_control_points_.start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, curr_elongation_scale_ * MOUTH_SIZE.y);
-    //     upper_mouth_bezier_control_points_.end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, curr_elongation_scale_ * MOUTH_SIZE.y);
-    //     lower_mouth_bezier_control_points_.start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, -1.0f * curr_elongation_scale_ * MOUTH_SIZE.y);
-    //     lower_mouth_bezier_control_points_.end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, -1.0f * curr_elongation_scale_ * MOUTH_SIZE.y);
-    // }
 
     // move curr towards to target
-    curr_upper_points.start = curr_upper_points.start + frame_delta_time * SPEED * (target_upper_points.start - curr_upper_points.start);  
-    curr_upper_points.start_control = curr_upper_points.start_control + frame_delta_time * SPEED * (target_upper_points.start_control - curr_upper_points.start_control);  
-    curr_upper_points.end_control = curr_upper_points.end_control + frame_delta_time * SPEED * (target_upper_points.end_control - curr_upper_points.end_control);  
-    curr_upper_points.end = curr_upper_points.end + frame_delta_time * SPEED * (target_upper_points.end - curr_upper_points.end);  
+    curr_upper_points.start = curr_upper_points.start + frame_delta_time * SPEED * (target_upper_points.start - curr_upper_points.start);
+    curr_upper_points.start_control = curr_upper_points.start_control + frame_delta_time * SPEED * (target_upper_points.start_control - curr_upper_points.start_control);
+    curr_upper_points.end_control = curr_upper_points.end_control + frame_delta_time * SPEED * (target_upper_points.end_control - curr_upper_points.end_control);
+    curr_upper_points.end = curr_upper_points.end + frame_delta_time * SPEED * (target_upper_points.end - curr_upper_points.end);
 
-    curr_lower_points.start = curr_lower_points.start + frame_delta_time * SPEED * (target_lower_points.start - curr_lower_points.start);  
-    curr_lower_points.start_control = curr_lower_points.start_control + frame_delta_time * SPEED * (target_lower_points.start_control - curr_lower_points.start_control);  
-    curr_lower_points.end_control = curr_lower_points.end_control + frame_delta_time * SPEED * (target_lower_points.end_control - curr_lower_points.end_control);  
-    curr_lower_points.end = curr_lower_points.end + frame_delta_time * SPEED * (target_lower_points.end - curr_lower_points.end);  
+    curr_lower_points.start = curr_lower_points.start + frame_delta_time * SPEED * (target_lower_points.start - curr_lower_points.start);
+    curr_lower_points.start_control = curr_lower_points.start_control + frame_delta_time * SPEED * (target_lower_points.start_control - curr_lower_points.start_control);
+    curr_lower_points.end_control = curr_lower_points.end_control + frame_delta_time * SPEED * (target_lower_points.end_control - curr_lower_points.end_control);
+    curr_lower_points.end = curr_lower_points.end + frame_delta_time * SPEED * (target_lower_points.end - curr_lower_points.end);
+
+    if (is_speaking_)
+    {
+        if (curr_upper_points.closeEnough(target_upper_points, 5.0f))
+        {
+            float elongation_scale_ = elongation_dist_(random_engine_);
+
+            target_upper_points.start = sf::Vector2f(-0.3f * MOUTH_SIZE.x, 0.0f);
+            target_upper_points.start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, -1.0f * elongation_scale_ * MOUTH_SIZE.y);
+            target_upper_points.end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, -1.0f * elongation_scale_ * MOUTH_SIZE.y);
+            target_upper_points.end = sf::Vector2f(0.3f * MOUTH_SIZE.x, 0.0f);
+
+            target_lower_points.start = sf::Vector2f(-0.3f * MOUTH_SIZE.x, 0.0f);
+            target_lower_points.start_control = sf::Vector2f(-0.3f * MOUTH_SIZE.x, 1.0f * elongation_scale_ * MOUTH_SIZE.y);
+            target_lower_points.end_control = sf::Vector2f(0.3f * MOUTH_SIZE.x, 1.0f * elongation_scale_ * MOUTH_SIZE.y);
+            target_lower_points.end = sf::Vector2f(0.3f * MOUTH_SIZE.x, 0.0f);
+        }
+    }
 
     upper_bezier_line_points_ = curr_upper_points.generateCurve();
     lower_bezier_line_points_ = curr_lower_points.generateCurve();
